@@ -2,6 +2,10 @@
 #include<stdlib.h>
 #include<string.h>
 #include<ctype.h>
+#include<time.h>
+
+void delay(float sec);
+void trim(char * str);
 
 int main(){
 
@@ -24,26 +28,42 @@ int main(){
     printf("\nc> Descending order is not allowed: eg; 7 - 1 (i.e. Sat to Sun is prohibitted)");
     printf("\n\nChoose Start Day: ");
     scanf("%d%*c", &sd);
-    printf("Choose End Day: ");
-    scanf("%d%*c", &ed);
-    td = (ed - sd);
 
-    if(sd<1 || ed>7){
-        printf("Error! Out of Range\n");
+    if(sd<1 || sd>7){
+        getchar();
+        printf("\nError! Out of Range Value!");
+        delay(1);
+        system("cls");
         goto day_select;
     }
+
+    re:
+    printf("\nChoose End Day: ");
+    scanf("%d%*c", &ed);
+
+    if(ed<1 || ed>7){
+        getchar();
+        printf("\nError! Out of Range Value!");
+        delay(0.6);
+        goto re;
+    }
+
+    td = (ed - sd);
+
     if(td<0){
         printf("Error! Wrong Format\n");
+        delay(1);
+        system("cls");
         goto day_select;
     }
     td = (ed-sd)+1;
 
-/********** INITIALIZATION 2 *******************/
+/********** INITIALIZATION 2 ***************/
 
-    printf("\nEnter Number of Periods In a Day: ");
+    printf("\nEnter the Total Number of Periods(In a Day): ");
     scanf("%d%*c", &period);
 
-    printf("\nNo. of Routines You Want to Make: ");
+    printf("\nNumber of Routines You Want to Make: ");
     scanf("%d%*c", &no);
 
     char fac[no][15];
@@ -60,7 +80,7 @@ int main(){
 /********** ROUTINE MAKING ************/
     for(t=0; t<no; t++){
  
-        printf("\nEnter the Faculty for Routine %d:\n", (t+1));
+        printf("\nRoutine no. %d\nGrade/Faculty for this Routine: ", (t+1));
         scanf("%[^\n]%*c", fac[t]);
         strupr(fac[t]);
 
@@ -73,7 +93,7 @@ int main(){
         for(op=0; op<tp; op++){
             lp1 = (sd-1);
             printf("Routine no. %d\n", (t+1));
-            printf("Faculty = %s\n", fac[t]);
+            printf("Grade/Faculty = %s\n", fac[t]);
             strcpy(sub[t][op], ch1);
 
             for(i=0; i<td; i++){
@@ -117,11 +137,15 @@ int main(){
 
             printf("\nEnter the subject In Place '>'[Max 14 letters (including space)]:\n");
             
-            scanf("%[^\n]%*c", sub[t][op]);
+            fgets(sub[t][op], 14, stdin);
+            if(t == 0 && op == 0)
+                getchar();
+            trim(sub[t][op]);
             strupr(sub[t][op]);
             system("cls");
         }
 
+        system("cls");
     }
     
 /******** Collison Detactor *******/
@@ -134,7 +158,7 @@ int main(){
 
     int flag = 0;
     int k, w;
-    char es = '#', res;
+    char es = '*', res;
 
     for (t=0; t<(no-1); t++){
         for(i=0; i<td; i++){
@@ -158,7 +182,6 @@ int main(){
     }
 
 /****** Showing Errors ******/
-
     if(flag != 0){
 
         for(t=0; t<no; t++){
@@ -221,13 +244,13 @@ int main(){
 
         else{
             printf("\nError, Wrong Response: ");
+            delay(1);
             goto solve_q;
         }
 
     }
 
 /***** Collison Solver *****/
-
     solve:
     int error, solve, soln;
     char ch = ' ';
@@ -273,7 +296,7 @@ int main(){
 
                                 else{
                                     printf ("\nInvalid Entry!!");
-                                    // delay(1);
+                                    delay(1);
                                     goto soln_part;
                                 }
                             }
@@ -283,8 +306,8 @@ int main(){
                             }
 
                             else{
-                                printf ("Invalid Entery!!");
-                                // delay(1);
+                                printf ("Invalid Entry!!");
+                                delay(1);
                                 goto solve_part;
                             }
                         }
@@ -406,3 +429,40 @@ int main(){
     return 0;
 }
 
+void delay(float sec) 
+{
+    // Converting time into milli_seconds
+    int milli_seconds = 1000 * sec;
+  
+    // Storing start time
+    clock_t start_time = clock();
+  
+    // looping till required time is not achieved
+    while (clock() < start_time + milli_seconds)
+        ;
+
+    /* This Piece of code Was Taken from stackoverflow.com */
+}
+
+void trim(char * str)
+{
+    int index, i;
+
+    /* Set default index */
+    index = -1;
+
+    /* Find last index of non-white space character */
+    i = 0;
+    while(str[i] != '\0')
+    {
+        if(str[i] != ' ' && str[i] != '\t' && str[i] != '\n')
+        {
+            index= i;
+        }
+
+        i++;
+    }
+
+    /* Mark next character to last non-white space character as NULL */
+    str[index + 1] = '\0';
+}
