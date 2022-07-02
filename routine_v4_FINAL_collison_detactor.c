@@ -16,7 +16,7 @@ int main(){
     char days[7][3] = {"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"};
     int period;
     int t, i=0, j, d, n, l, op, lp1;
-    int per, pert;
+    int per, pert, nic;
 
 /************* DAY SELECT ******************/
 
@@ -68,7 +68,7 @@ int main(){
 
     char fac[no][15];
 
-    char ch1[11] = ">        ";
+    char ch1[11] = ">>>       ";
 
     int tp = (td*period);
     
@@ -135,17 +135,21 @@ int main(){
 
             }
 
-            printf("\nEnter the subject In Place '>'[Max 14 letters (including space)]:\n");
+            printf("\nEnter the subject In Place '>>>' [Max 14 letters (including space)]:\n");
             
+            nic = t;
             fgets(sub[t][op], 14, stdin);
-            if(t == 0 && op == 0)
-                getchar();
+            if((t == nic && op == 0))
+                getche();
             trim(sub[t][op]);
             strupr(sub[t][op]);
             system("cls");
         }
 
-        system("cls");
+        if(op == (tp-1)){
+            delay(1);
+            system("cls");
+        }
     }
     
 /******** Collison Detactor *******/
@@ -233,8 +237,8 @@ int main(){
         }
 
         solve_q:
-        printf ("\n%d collisions Detected In Subjects Marked '#'\nWant to Solve?(Y/N): ", flag);
-        scanf("%c", &res);
+        printf ("\n%d collisions Detected In Subjects Marked '*'\nWant to Solve?(Y/N): ", flag);
+        scanf("%c%*c", &res);
         res = toupper(res);
         if(res == 'Y')
             goto solve;
@@ -252,7 +256,8 @@ int main(){
 
 /***** Collison Solver *****/
     solve:
-    int error, solve, soln;
+    int error;
+    char solve, soln;
     char ch = ' ';
     do{ 
         error = 0;
@@ -268,28 +273,29 @@ int main(){
                     w = (t+1);
                     for (k=w; k<no; k++){
                         if (strcmp(sub[t][j], sub[k][j]) == 0){
-                            printf ("\nCollision on %.3sday period %d on %s & %s ", days[i], d, fac[t], fac[k]);
+                            printf ("\nCollision on %.3s period %d on %s & %s ", days[i], d, fac[t], fac[k]);
                             printf ("(%s = %s)", sub[t][j], sub[k][j]);
 
                             error = 1;
                             flag = 1;
                             solve_part:
-                            printf ("\nSolve it?\n1-YES\n2-NO\n");
-                            scanf("%d", &solve);
+                            printf ("\nSolve it?\nType Y for YES\nType N For NO\n");
+                            scanf("%c%*c", &solve);
+                            solve = toupper(solve);
 
-                            if (solve == 1){
+                            if (solve == 'Y'){
                                 soln_part:
-                                printf ("\nMake changes to:\n1-%s\n2-%s\n", fac[t], fac[k]);
-                                scanf("%d", &soln);
+                                printf ("\nMake changes to:\nType 1 to Make Changes to %s\nType 2 to Make Changes to %s\n", fac[t], fac[k]);
+                                scanf("%c%*c", &soln);
 
-                                if(soln == 1){
-                                    printf ("%s Faculty %s period %d: ", fac[t], days[i], d);
+                                if(soln == '1'){
+                                    printf ("%s Faculty %.3s period %d: ", fac[t], days[i], d);
                                     scanf("%s", sub[t][j]);
                                     strupr(sub[t][j]);
                                 }
 
-                                else if (soln == 2){
-                                    printf ("%s Faculty %sday period %d: ", fac[k], days[i], d);
+                                else if (soln == '2'){
+                                    printf ("%s Faculty %.3s period %d: ", fac[k], days[i], d);
                                     scanf("%s", sub[k][j]);
                                     strupr(sub[k][j]);
                                 }
@@ -301,7 +307,7 @@ int main(){
                                 }
                             }
 
-                            else if (solve == 2){
+                            else if (solve == 'N'){
                                 strncat(sub[k][j], &ch, 1);
                             }
 
