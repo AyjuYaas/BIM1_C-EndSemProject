@@ -11,7 +11,7 @@ int main(){
 
     system("cls");
 /****************** INITIALIZATION 1 ************************/
-
+    printf(" ROUTINE MAKING PROGRAM \n\n");
     int no; 
     char days[7][3] = {"SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"};
     int period;
@@ -24,8 +24,8 @@ int main(){
     int ed, sd, td;
     printf("\nIf:\n\n1 = Sunday\n2 = Monday\n3 = Tuesday\n4 = Wednesday\n5 = Thursday\n6 = Friday\n7 = Saturday");
     printf ("\n\nChoose a starting day and a ending day for routine\n");
-    printf("\nNOTES:\nA> Choose Start and End Day, EG: 1 & 6 For Sunday to Friday\nB> For Only 1 Day routine Enter the same number (eg 1 & 1)");
-    printf("\nc> Descending order is not allowed: eg; 7 - 1 (i.e. Sat to Sun is prohibitted)");
+    printf("\nNOTES:\nA> Choose Start and End Day, EG: 1 & 6 For Sunday to Friday\nB> For Only 1 Day routine Enter the same number (eg 1 & 1 for Sunday)");
+    printf("\nC> Descending order is not allowed: eg; 7 - 1 (i.e. Sat to Sun is prohibitted)");
     printf("\n\nChoose Start Day: ");
     scanf("%d%*c", &sd);
 
@@ -60,10 +60,10 @@ int main(){
 
 /********** INITIALIZATION 2 ***************/
 
-    printf("\nEnter the Total Number of Periods(In a Day): ");
+    printf("\nEnter the Total Number of Periods You Want(In a Day): ");
     scanf("%d%*c", &period);
 
-    printf("\nNumber of Routines You Want to Make: ");
+    printf("\nEnter the Number of Routines You Want to Make: ");
     scanf("%d%*c", &no);
 
     char fac[no][15];
@@ -135,12 +135,11 @@ int main(){
 
             }
 
-            printf("\nEnter the subject In Place '>>>' [Max 14 letters (including space)]:\n");
-            
-            nic = t;
-            fgets(sub[t][op], 14, stdin);
-            if((t == nic && op == 0))
-                getche();
+            printf("\nEnter the Subject Down Below to Replace the Pointer '>>>' [Max 14 letters (including space)]:\n");
+            printf("Enter Here: ");
+            scanf("%[^\n]", sub[t][op]);
+            getchar();
+
             trim(sub[t][op]);
             strupr(sub[t][op]);
             system("cls");
@@ -162,7 +161,7 @@ int main(){
 
     int flag = 0;
     int k, w;
-    char es = '*', res;
+    char res;
 
     for (t=0; t<(no-1); t++){
         for(i=0; i<td; i++){
@@ -176,8 +175,8 @@ int main(){
                 w = (t+1);
                 for (k=w; k<no; k++){
                     if (strcmp(error_sub[t][j], error_sub[k][j]) == 0){
-                        strncat (error_sub[t][j], &es, 1);
-                        strncat (error_sub[k][j], &es, 1);
+                        strcat (error_sub[t][j], " <");
+                        strcat (error_sub[k][j], " <");
                         flag++;
                     }
                 }
@@ -237,7 +236,7 @@ int main(){
         }
 
         solve_q:
-        printf ("\n%d collisions Detected In Subjects Marked '*'\nWant to Solve?(Y/N): ", flag);
+        printf ("\n%d collisions Detected In Subjects Marked '<'\nWant to Solve?(Y/N): ", flag);
         scanf("%c%*c", &res);
         res = toupper(res);
         if(res == 'Y')
@@ -257,9 +256,10 @@ int main(){
 /***** Collison Solver *****/
     solve:
     int error;
-    char solve, soln;
+    char solve, soln, noo = 1;
     char ch = ' ';
     do{ 
+        solve = '\0';
         error = 0;
         for (t=0; t<(no-1); t++){
             for(i=0; i<td; i++){
@@ -267,20 +267,25 @@ int main(){
                 per = (n*period);
                 pert = ((n+1)*period);
                 d = 0;
+                lp1 = (sd-1);
 
                 for (j=per; j<pert; j++){
                     d += 1;
                     w = (t+1);
                     for (k=w; k<no; k++){
                         if (strcmp(sub[t][j], sub[k][j]) == 0){
-                            printf ("\nCollision on %.3s period %d on %s & %s ", days[i], d, fac[t], fac[k]);
+                            printf("\nCollision No. %d", noo);
+                            printf ("\nCollision on %.3s period %d on %s & %s ", days[lp1], d, fac[t], fac[k]);
                             printf ("(%s = %s)", sub[t][j], sub[k][j]);
 
                             error = 1;
                             flag = 1;
+                            noo++;
                             solve_part:
+                            solve = '\0';
                             printf ("\nSolve it?\nType Y for YES\nType N For NO\n");
-                            scanf("%c%*c", &solve);
+                            solve = getchar();
+                            gets(stdin);
                             solve = toupper(solve);
 
                             if (solve == 'Y'){
@@ -289,13 +294,13 @@ int main(){
                                 scanf("%c%*c", &soln);
 
                                 if(soln == '1'){
-                                    printf ("%s Faculty %.3s period %d: ", fac[t], days[i], d);
+                                    printf ("%s Faculty %.3s period %d: ", fac[t], days[lp1], d);
                                     scanf("%s", sub[t][j]);
                                     strupr(sub[t][j]);
                                 }
 
                                 else if (soln == '2'){
-                                    printf ("%s Faculty %.3s period %d: ", fac[k], days[i], d);
+                                    printf ("%s Faculty %.3s period %d: ", fac[k], days[lp1], d);
                                     scanf("%s", sub[k][j]);
                                     strupr(sub[k][j]);
                                 }
@@ -319,6 +324,8 @@ int main(){
                         }
                     }
                 }
+
+                lp1 += 1;
             }
         }
     }while (error == 1);
