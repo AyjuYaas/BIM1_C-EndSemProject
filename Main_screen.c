@@ -2,6 +2,7 @@
 #include<stdlib.h>
 #include<time.h>
 #include<string.h>
+#include"designers_info.h"
 
 void title_screen();
 void delay(float);
@@ -32,9 +33,11 @@ void title_screen(){
     int choice;
     printf ("\tWELCOME TO *** LOGIN PAGE\n\n");
     printf ("Please Choose from the following options\n\n");
-    printf ("\t1 - Teacher Login\n");
-    printf ("\t2 - Student Login\n");
-    printf ("\t3 - Department login\n");
+    printf ("\t[1] Teacher Login\n");
+    printf ("\t[2] Student Login\n");
+    printf ("\t[3] Department login\n");
+    printf ("\t[4] Designers Info\n");
+    printf ("\t[5] Exit\n");
     printf ("\tChoose: ");
     scanf ("%d", &choice);
 
@@ -51,6 +54,16 @@ void title_screen(){
             department_screen();
             break;
 
+        case 4:
+            animation();
+            delay(0.5);
+            title_screen();
+            break;
+
+        case 5:
+            exit(1);
+            break;
+            
         case 32715:
             dep_reg_screen();
             break;
@@ -69,17 +82,17 @@ void dep_reg_screen(){
     system("cls");
   /** LOADING SCREEN **/
     printf("Restricted Area Loading");
-    for(i=0; i<3; i++){
+    for(i=0; i<5; i++){
         printf(".");
-        delay(0.5);
+        delay(0.2);
     }
     system("cls");
 
   /** CHOOSING SCREEN **/
     dep_create_choose:
     printf("Welcome To Department Creation Page\n\n");
-    printf("\t1 - Add a New Department\n");
-    printf("\t2 - Exit to Main Screen\n\n");
+    printf("\t[1] Add a New Department\n");
+    printf("\t[2] Exit to Main Screen\n\n");
     printf("Choose: ");
     scanf("%d%*c", &choose);
 
@@ -135,7 +148,7 @@ void dep_reg_screen(){
 
     printf("\nAccount Created!!!");
     printf("\nFill Up The Remaining Details");
-    printf("\n\nNOTE: No Spaces, Use '-' Instead");
+    printf("\n\nNOTE: Use No Space on FILLING THESE FORMS");
 
   /** DEPARTMENT FURTHER DETAILS **/
     printf("\n\nEnter the Name of Department: ");
@@ -159,8 +172,11 @@ void dep_reg_screen(){
     fclose(dd);
 
     printf("\nDepartment Account Created..");
-    printf("\nReturning to Main Screen");  
-    delay(1);
+    printf("\nReturning to Main Screen .");  
+    for(i=0; i<5; i++){
+        printf(".");
+        delay(0.2);
+    }
     system("cls");
     title_screen();      
 
@@ -168,7 +184,7 @@ void dep_reg_screen(){
 
 void department_screen(){
 
-    int flag = 0;
+    int flag = 0, choice;
     system("cls");
     printf("\tDepartment Login!!!!");
     printf("\n\nEnter Username: ");
@@ -190,8 +206,28 @@ void department_screen(){
     }
     if(flag == 0){
         printf("Username/Password Incorrect!!!");
-        delay(1);
-        department_screen();
+        redo_dep:
+        printf("[1] Try Again?\n");
+        printf("[2] Main Menu");
+        printf("[3] Exit\n");
+        printf("Choose: ");
+        scanf("%d", &choice);
+        if(choice == 1){
+            department_screen();
+        }
+        else if(choice == 2){
+            title_screen();
+        }
+        else if(choice == 3){
+            exit(2);
+        }
+        else{
+            printf("Wrong Entry!!");
+            printf("Enter Correctly!!");
+            delay(1);
+            goto redo_dep;  
+        }
+        
     } 
 
     success:
