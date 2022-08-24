@@ -135,6 +135,7 @@ void signIn()
 	scanf("%s%*c",&teach.u);
 	printf("Password:");
 	scanf("%s%*c",&teach.p);
+	int flag = 0;
 	FILE *up;
 	up=fopen("teacher.dat","r");
 	while(fscanf(up,"%s %s\n",&tea.u,&tea.p)!= EOF)
@@ -142,15 +143,12 @@ void signIn()
         if(strcmp(teach.u,tea.u)==0 && strcmp(teach.p,tea.p)==0)
 		{
            homepage();
-        }
-        else
-        {
-        printf("Wrong username or password!!\nRetry!!");
-        delay(1);
-        rewind(up);
-        goto redo4;
-		}
+	}
     }
+	if(flag==0){
+		printf("Wrong Username/password!!\nTry Again!!\n);
+		goto signIn();
+	}
     fclose(up);
 }
 void homepage()
