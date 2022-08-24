@@ -89,7 +89,7 @@ void signup()
 	scanf("%s%*c",&tea.u);
 	teach.u[10] = '\0';
 	teach.p[15] = '\0';
-	while (fscanf(tcheck,"%s%s\n",&teach.u,&teach.p)!= EOF)
+	while (fscanf(tcheck,"%s %s\n",&teach.u,&teach.p)!= EOF)
 	{
 		if (strcmp(tea.u,teach.u) == 0)
 		{
@@ -116,7 +116,7 @@ void signup()
 	
 	FILE *p;
 	p = fopen("teacher.dat", "a+");
-	fprintf(p, "%s%s\n",tea.u,tea.p);
+	fprintf(p, "%s %s\n",tea.u,tea.p);
 	fclose(p);
 	   
 	FILE *fp;
@@ -137,7 +137,7 @@ void signIn()
 	scanf("%s%*c",&teach.p);
 	FILE *up;
 	up=fopen("teacher.dat","r");
-	while(fscanf(up,"%s%s\n",&tea.u,&tea.p)!= EOF)
+	while(fscanf(up,"%s %s\n",&tea.u,&tea.p)!= EOF)
 	{
         if(strcmp(teach.u,tea.u)==0 && strcmp(teach.p,tea.p)==0)
 		{
