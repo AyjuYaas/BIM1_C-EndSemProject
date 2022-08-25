@@ -171,8 +171,7 @@ void homepage()
     	system("cls");
     	FILE *dfp;
     	dfp=fopen("tdetails.dat","r+");
-		fscanf(dfp,"%s %s %d %s %c %.2d%.2d%.4d %s\n",&tea.u,&tea.p,&tea.id,&tea.name,&tea.gender,&tea.doby,&tea.dobm,&tea.dobd,&tea.subject);
-		while((fscanf(dfp,"%s",&tea.u)) != EOF)
+		while(fscanf(dfp,"%s %s %d %s %c %.2d%.2d%.4d %s\n",&tea.u,&tea.p,&tea.id,&tea.name,&tea.gender,&tea.doby,&tea.dobm,&tea.dobd,&tea.subject) != EOF)
 		{
         	if(strcmp(tea.u,teach.u) == 0)
 			{
