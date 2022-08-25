@@ -121,7 +121,7 @@ void signup()
 	   
 	FILE *fp;
 	fp=fopen("tdetails.dat","a+");
-	fprintf(fp,"%s %s %d %s %c %.2d%.2d%.4d %s",tea.u,tea.p,tea.id,tea.name,tea.gender,tea.doby,tea.dobm,tea.dobd,tea.subject);
+	fprintf(fp,"%s %s %d %s %c %.2d%.2d%.4d %s\n",tea.u,tea.p,tea.id,tea.name,tea.gender,tea.doby,tea.dobm,tea.dobd,tea.subject);
 	fclose(fp);
 	teacher_screen();
 	
@@ -129,43 +129,77 @@ void signup()
 
 void signIn()
 {
-	printf("\nWelcome to Teacher Login\n");
+	FILE *up;
+	int flag=0;
 	redo4:
+	printf("\nWelcome to Teacher Login\n");
 	printf("Username:");
 	scanf("%s%*c",&teach.u);
 	printf("Password:");
 	scanf("%s%*c",&teach.p);
-	int flag = 0;
-	FILE *up;
 	up=fopen("teacher.dat","r");
 	while(fscanf(up,"%s %s\n",&tea.u,&tea.p)!= EOF)
 	{
         if(strcmp(teach.u,tea.u)==0 && strcmp(teach.p,tea.p)==0)
 		{
            homepage();
-	}
-   
-	if(flag==0){
-		printf("Wrong Username/password!!\nTry Again!!\n);
-		goto signIn();
-	}
+           flag==1;
+        }
+        
+		
+    }
+    if(flag==0)
+    	{
+	    	printf("Wrong username or password!!\nRetry!!");
+	        delay(1);
+	        rewind(up);
+	        goto redo4;
+		}
     fclose(up);
 }
 void homepage()
 {
-	int x;
-	printf("1.Personal Info\n2.Routine ");
-	printf("Choose:");
-	scanf("%d",&n);
-	switch(x)
+	int choose;
+	printf("Welcome!!!%s\n",tea.name);
+	success:
+	printf("Choose:\n");
+	printf("1.View Personal Details\n2.ViewRoutine\n");
+	scanf("%d",&choose);
+	switch(choose)
 	{
 		case 1:
-			//viwpersonalinfo
-			break;
-		case 2:
-			//viewroutine
-			break;
+    	system("cls");
+    	FILE *dfp;
+    	dfp=fopen("tdetails.dat","r+");
+		fscanf(dfp,"%s %s %d %s %c %.2d%.2d%.4d %s\n",&tea.u,&tea.p,&tea.id,&tea.name,&tea.gender,&tea.doby,&tea.dobm,&tea.dobd,&tea.subject);
+		while((fscanf(dfp,"%s",&tea.u)) != EOF)
+		{
+        	if(strcmp(tea.u,teach.u) == 0)
+			{
+				printf("Your Details\n");
+	            printf("Username: %s",tea.u);
+	            printf("Password: %s",tea.p);
+	            printf("ID: %d",tea.id);
+	            printf("Name: %s",tea.name);
+	            printf("Gender: %c",tea.gender);
+	            printf("DOB: %d/%d/%d",tea.doby,tea.dobm,tea.dobd);
+	            printf("Subject: %s",tea.subject);
+	            
+        	}
+        
+    	}
+    	fclose(dfp);
+    	break;
+    	case 2:
+    		printf("Routine here!!");//sayujya yeta halnus la daju pls
+    		break;
+    	default:
+    		printf("Wrong Input!!");
+    		goto success;
+    		break;
+    		
 	}
+	
 
 }
 void delay(float sec)
@@ -181,3 +215,6 @@ void delay(float sec)
 
     /* This Piece of code Was Taken from stackoverflow.com */
 }
+	
+
+   
