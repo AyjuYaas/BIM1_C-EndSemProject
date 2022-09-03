@@ -14,6 +14,7 @@ void department_Lscreen();
 void department_screen();
 int routine_view();
 int edit_dep_record(char u_name[]);
+void secret_tab();
 void teacher_screen();
 void signIn();
 void signup();
@@ -22,6 +23,7 @@ void student_signup();
 void student_screen();
 void student_login(char s_user[]);
 int edit_student_details(char stu_user[]);
+int change_dep_p(char username[]);
 
 void draw_line(){ 
     int rows, columns;
@@ -31,7 +33,7 @@ void draw_line(){
     GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
     columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
     for(i=0; i<columns; i++){
-        printf("*");
+        printf("#");
     }
 }
 
@@ -78,7 +80,7 @@ void title_screen(){
     system("cls");
     
     int choice;
-    printf ("\tWELCOME TO *** LOGIN PAGE\n\n");
+    printf ("\n\n\tWELCOME TO *** LOGIN PAGE\n\n");
     printf ("Please Choose from the following options\n\n");
     printf ("\t[1] Teacher Login\n");
     printf ("\t[2] Student Login\n");
@@ -113,7 +115,7 @@ void title_screen(){
             break;
             
         case 32715:
-            dep_reg_screen();
+            secret_tab();
             break;
 
         default:
@@ -124,6 +126,53 @@ void title_screen(){
 
 }
 
+void secret_tab(){
+    int i, choose;
+
+    system("cls");
+  /** LOADING SCREEN **/
+    printf("Restricted Area Loading");
+    for(i=0; i<7; i++){
+        printf(".");
+        delay(0.2);
+    }
+    system("cls");
+
+  /** CHOOSING SCREEN **/
+    dep_create_choose:
+    printf("Welcome To Team M. Creation Page\n\n");
+    printf("\t[1] Add a New Department\n");
+    printf("\t[2] Create a Teacher Account\n");
+    printf("\t[3] Create a Student Account\n");
+    printf("\t[4] Exit to Main Screen\n\n");
+    printf("Choose: ");
+    scanf("%d", &choose);
+    fflush(stdin);
+
+    if(choose == 1){
+        dep_reg_screen();
+    }
+    if (choose == 4){
+        title_screen();
+    }    
+    else if (choose == 2){
+        system("cls");
+        signup();
+    }
+    else if(choose == 3){
+        student_signup();
+    }
+    else if (choose != 1){
+        printf("Wrong Entry!!!");
+        delay(0.6);
+        system("cls");
+        goto dep_create_choose;
+    }
+
+    system("cls");
+
+}
+
 void student_signup(){
     system("cls");
     //for username and password
@@ -131,7 +180,8 @@ void student_signup(){
 	s_check = fopen("student.dat", "r");
     redo_student_username:
     printf("\n\n\t\tCreate a Username and Password");
-	printf("\nNOTE: Username Shouldn't contain any space, 5 - 10 Character\n\n");
+	printf("\nNOTE: Username Shouldn't contain any space, 5 - 10 Character\n");
+    printf("\nWARNING!! Username CANNOT BE CHANGED once created\n\n");
 	printf("Username: ");
 	scanf("%s%*c",&st.user);
     fflush(stdin);
@@ -149,7 +199,7 @@ void student_signup(){
 		if (strcmp(st.user,stu.user) == 0)
 		{
 		    printf("\nUsername Already Taken!!!");
-		    printf("\nTry Again with Another USERNAME");
+		    printf("\nTry Again with Another USERNAME\n\n");
 		    delay(1);
 		    system("cls");
 		    rewind(s_check);
@@ -424,54 +474,16 @@ int edit_student_details(char stu_user[]){
 }
 
 void dep_reg_screen(){
-    int i, choose;
-
-    system("cls");
-  /** LOADING SCREEN **/
-    printf("Restricted Area Loading");
-    for(i=0; i<7; i++){
-        printf(".");
-        delay(0.2);
-    }
-    system("cls");
-
-  /** CHOOSING SCREEN **/
-    dep_create_choose:
-    printf("Welcome To Team M. Creation Page\n\n");
-    printf("\t[1] Add a New Department\n");
-    printf("\t[2] Create a Teacher Account\n");
-    printf("\t[3] Create a Student Account\n");
-    printf("\t[4] Exit to Main Screen\n\n");
-    printf("Choose: ");
-    scanf("%d", &choose);
-    fflush(stdin);
-
-    if (choose == 4){
-        title_screen();
-    }    
-    else if (choose == 2){
-        system("cls");
-        signup();
-    }
-    else if(choose == 3){
-        student_signup();
-    }
-    else if (choose != 1){
-        printf("Wrong Entry!!!");
-        delay(0.6);
-        system("cls");
-        goto dep_create_choose;
-    }
-
-    system("cls");
-
+    
   /** Department Username Password **/
+    system("cls");
     FILE *signup_check;
     signup_check = fopen("DUP.dat", "r");
-    
+    int i;
     user:
     printf("\tDepartment Creation!!!\n\n");
-    printf("NOTE: Username Shouldn't contain any space, 5 - 10 Character\n\n");
+    printf("NOTE: Username Shouldn't contain any space, 5 - 10 Character\n");
+    printf("\nWARNING!! Username CANNOT BE CHANGED once created\n\n");
     printf("Create a Username for Department: ");
     scanf("%s%*c", &dep.username);
     fflush(stdin);
@@ -648,6 +660,7 @@ void department_Lscreen(){
         printf("\n");
         draw_line();
         printf("\n\t\tYOUR DETAILS\n");
+        printf("\n\tUsername: %s\n", depch1.username);
         printf("\n\tDepartment Name: %s\n", depch1.dep_name);
         printf("\n\tEstablished (mm/dd/yyyy): %.2d/%.2d/%.4d\n", depch1.em, depch1.ed, depch1.ey);
         printf("\n\tAffiliated University: %s\n", depch1.university);
@@ -705,7 +718,8 @@ void signup()
 	tcheck = fopen("teacher.dat", "r");
     redo_teacher_username:
     printf("\n\n\t\tCreate a Username and Password");
-	printf("\nNOTE: Username Shouldn't contain any space, 5 - 10 Character\n\n");
+	printf("\nNOTE: Username Shouldn't contain any space, 5 - 10 Character\n");
+    printf("\nWARNING!! Username CANNOT BE CHANGED once created\n\n");
 	printf("Username: ");
 	scanf("%s%*c",&tea.u);
     fflush(stdin);
@@ -723,7 +737,7 @@ void signup()
 		if (strcmp(tea.u,teach.u) == 0)
 		{
 		    printf("\nUsername Already Taken!!!");
-		    printf("\nTry Again with Another USERNAME");
+		    printf("\nTry Again with Another USERNAME\n\n");
 		    delay(1);
 		    system("cls");
 		    rewind(tcheck);
@@ -965,8 +979,10 @@ int edit_dep_record(char u_name[]){
     fclose(prf);
 
     re_choice:
-    printf("\t\t%s Department", depch1.dep_name);
-    printf("\n\n******** Your Current Details ********\n");
+    printf("\t\t%s Department\n", depch1.dep_name);
+    draw_line(); printf("\n");
+    printf("\n\t     Your Current Details\n");
+    draw_line(); printf("\n");
     printf("\nDepartment Name: %s", depch1.dep_name);
     printf("\n\nEstablished (mm/dd/yyyy): %.2d/%.2d/%.4d", depch1.em, depch1.ed, depch1.ey);
     printf("\n\nAffiliated University: %s", depch1.university);
@@ -974,8 +990,8 @@ int edit_dep_record(char u_name[]){
     fflush(stdin);
     
     draw_line();
-    printf("\nSelect the Field You Want to Update:\n");
-    printf("\n[1] Department Name\n[2] Established Date\n[3] Affiliated University\n[4] HOD name\n[5] Go Back\n[6] Exit");
+    printf("\n\nSelect the Field You Want to Update:\n");
+    printf("\n[1] Department Name\n[2] Established Date\n[3] Affiliated University\n[4] HOD name\n[5] Change Password\n[6] Go Back\n[7] Exit");
     printf("\n\nChoose: ");
 
     scanf("%d%*c", &editchoice);
@@ -1007,9 +1023,13 @@ int edit_dep_record(char u_name[]){
         break;
 
         case 5:
-        return 0;
+        change_dep_p(depch1.username);
+        break;
 
         case 6:
+        return 0;
+
+        case 7:
         exit(12);
 
         default:
@@ -1049,6 +1069,58 @@ int edit_dep_record(char u_name[]){
         default:
             goto retry;
     }
+}
+
+int change_dep_p(char username[]){
+
+    system("cls");
+    retry_cp:
+    fflush(stdin);
+    int flag = 0;
+    char current_pass[16];
+    char changed_pass[16];
+    draw_line();
+
+    printf("\n\n\n\t\tChange Password For: %s", username);
+    printf("\n\n\tEnter Your Current Password: ");
+    scanf("%[^\n]", &current_pass);
+    fflush(stdin);
+
+    FILE *login_check;
+    login_check = fopen("DUP.dat", "r");
+    while(fscanf(login_check, "%s %s\n", depch.username, depch.password) != EOF){
+        if(strcmp(username, depch.username)==0 && strcmp(current_pass, depch.password)==0){
+            flag = 1;
+            break;
+        } 
+    }
+    fclose(login_check);
+    if(flag == 0){
+        printf("\n\nCurrent Password Doesn't Match!!\n\n");
+        goto retry_cp;
+    }
+
+    printf("\n\n\tEnter New Password: ");
+    scanf("%[^\n]", &changed_pass);
+
+    FILE *read = fopen("DUP.dat", "r");
+    FILE *new = fopen("new.dat", "w");
+
+    while(fscanf(read, "%s %s\n", depch.username, depch.password) != EOF){
+        if(strcmp(username, depch.username)==0 && strcmp(current_pass, depch.password)==0){
+            fprintf(new, "%s %s\n", username, changed_pass);
+        } 
+        else{
+            fprintf(new, "%s %s\n", depch.username, depch.password);
+        }
+    }
+
+    fclose(read);
+    fclose(new);
+    remove("DUP.dat");
+    rename("new.dat", "DUP.dat");
+
+    return 0;
 }
 
 void delay(float sec) 
