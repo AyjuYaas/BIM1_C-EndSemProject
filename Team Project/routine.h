@@ -7,7 +7,7 @@
 void delayfr(float sec);
 void trim(char * str);
 
-char * routine_maker(){
+char * routine_maker(char dep_name[]){
 
     system("cls");
 /****************** INITIALIZATION 1 ************************/
@@ -401,17 +401,19 @@ char * routine_maker(){
     }
     
 /**** FIlE PRINTING ****/
-    static char routine_name[30], temp_routine_name[30];
-    int a = 0;
-    printf("\n\nEnter the name of routine you want to save it as\n");
+    redo_rn:
+    fflush(stdin);
+    static char routine_name[25], temp_dep[20], temp_routine_name[30];
+    
+    printf("\n\nEnter the name of routine you want to save it as (25 Words Including Space)\n");
     gets(routine_name);
     fflush(stdin);
-
-    FILE *op12 = fopen("routinelist.txt", "a+");
-    while(fscanf(op12, "%d %[^\n]\n", &a, &temp_routine_name) != EOF){
+    if(strlen(routine_name) > 25){
+        printf("\nName too long!!");
+        goto redo_rn;
     }
-    rewind(op12);
-    fprintf(op12, "%d %s\n", a+1, routine_name);
+    FILE *op12 = fopen("routinelist.txt", "a+");
+    fprintf(op12, "%s|%s\n", dep_name, routine_name);
     fclose(op12);
     
     strcat(routine_name, ".txt");

@@ -12,7 +12,7 @@ void delay(float);
 void dep_reg_screen();
 void department_Lscreen();
 void department_screen();
-int routine_view();
+int routine_view(char dep101[]);
 int edit_dep_record(char u_name[]);
 void secret_tab();
 void teacher_screen();
@@ -77,8 +77,8 @@ int main(){
 }
 
 void title_screen(){
-    system("cls");
     
+    system("cls");
     int choice;
     printf ("\n\n\tWELCOME TO *** LOGIN PAGE\n\n");
     printf ("Please Choose from the following options\n\n");
@@ -127,7 +127,7 @@ void title_screen(){
 }
 
 void secret_tab(){
-    int i, choose;
+    int i, choose, stu_c, number_of_students;
 
     system("cls");
   /** LOADING SCREEN **/
@@ -160,7 +160,28 @@ void secret_tab(){
         signup();
     }
     else if(choose == 3){
-        student_signup();
+        system("cls");
+        printf("\n\t\tSTUDENT ACCOUNT CREATION");
+        printf("\n\n[1] Add a Single Sudent\n[2] Add Bulk Students");
+        printf("\nChoose: "); scanf("%d", &stu_c); fflush(stdin);
+        if(stu_c == 1){
+            system("cls");
+            student_signup();
+        }
+        else if(stu_c == 2){
+            printf("Enter Number of Student Data to be Entered: ");
+            scanf("%d", &number_of_students);
+            fflush(stdin);
+            for(i = 0; i<number_of_students; i++){
+                system("cls");
+                printf("\n\t\tDETAILS OF STUDENT no. %d\n", i+1);
+                draw_line();
+                printf("\n");
+                student_signup();
+            }
+        }
+        secret_tab();
+        
     }
     else if (choose != 1){
         printf("Wrong Entry!!!");
@@ -174,7 +195,6 @@ void secret_tab(){
 }
 
 void student_signup(){
-    system("cls");
     //for username and password
     FILE *s_check;
 	s_check = fopen("student.dat", "r");
@@ -194,6 +214,7 @@ void student_signup(){
 
 	stu.user[10] = '\0';
 	stu.pass[15] = '\0';
+    int i = 0;
 	while (fscanf(s_check,"%s %s\n",&stu.user,&stu.pass)!= EOF)
 	{
 		if (strcmp(st.user,stu.user) == 0)
@@ -205,8 +226,8 @@ void student_signup(){
 		    rewind(s_check);
 		    goto redo_student_username;
 		}
-	}
 	
+    }
 	redo_student_password:
 	printf("\nPassword Must Be Between 5 And 15 Character");
 	printf("\nEnter Password: ");
@@ -235,20 +256,34 @@ void student_signup(){
 	printf("\nDOB (yyyy/mm/dd): ");
 	scanf("%d/%d/%d",&st.doby, &st.dobm, &st.dobd);
     fflush(stdin);
-	printf("\nFaculty:");
-	scanf("%[^\n]",&st.faculty);
+	printf("\nChoose Faculty:\n");
+    FILE *choose_sf = fopen("dep_details.dat", "r");
+    int choice, count = 1;
+    while((fscanf(choose_sf, "%[^|]|%[^|]|%d/%d/%d|%[^|]|%[^\n]\n", &depch1.username, &depch1.dep_name, &depch1.em, &depch1.ed, &depch1.ey, &depch1.university, &depch1.hod)) != EOF){
+        printf("[%d] %s\n", count, depch1.dep_name);
+        count++;
+    }
+	scanf("%d", &choice);
     fflush(stdin);
+    count = 1;
+    rewind(choose_sf);
+    while((fscanf(choose_sf, "%[^|]|%[^|]|%d/%d/%d|%[^|]|%[^\n]\n", &depch1.username, &depch1.dep_name, &depch1.em, &depch1.ed, &depch1.ey, &depch1.university, &depch1.hod)) != EOF){
+        if(choice == count){
+            break;
+        }
+        count++;
+    }
+    fclose(choose_sf);
 	
     FILE *p;
 	p = fopen("student.dat", "a");
 	fprintf(p, "%s %s\n",st.user,st.pass);
-	fclose(p);
+    fclose(p);
 
 	FILE *fp;
 	fp=fopen("stu_details.dat","a+");
-	fprintf(fp,"%s|%d|%s|%c|%d/%d/%d|%s\n",st.user,st.roll,st.name,st.gender,st.doby,st.dobm,st.dobd,st.faculty);
+	fprintf(fp,"%s|%d|%s|%c|%d/%d/%d|%s\n",st.user,st.roll,st.name,st.gender,st.doby,st.dobm,st.dobd,depch1.dep_name);
 	fclose(fp);
-	title_screen();
 }
 
 void student_screen(){
@@ -343,7 +378,7 @@ void student_login(char s_user[]){
 
     case 2:
     	fflush(stdin);
-        int r_v_check = routine_view();
+        int r_v_check = routine_view(st.faculty);
         student_login(s_user);
         break;
     
@@ -555,7 +590,7 @@ void dep_reg_screen(){
         delay(0.2);
     }
     system("cls");
-    title_screen();      
+    secret_tab();
 
 }
 
@@ -638,7 +673,7 @@ void department_Lscreen(){
     {
     case 1:
     	fflush(stdin);
-        char * R_Check = routine_maker();
+        char * R_Check = routine_maker(depch1.dep_name);
         if(R_Check == NULL){
             printf("Some Error Occured While Creating Routine: ");
             delay(1.5);
@@ -652,7 +687,7 @@ void department_Lscreen(){
 
     case 2:
     	fflush(stdin);
-        int r_v_check = routine_view();
+        int r_v_check = routine_view(depch1.dep_name);
         goto successful_login;
         break;
 
@@ -786,7 +821,7 @@ void signup()
 	fp=fopen("tdetails.dat","a+");
 	fprintf(fp,"%s|%d|%s|%c|%d/%d/%d|%s\n",tea.u,tea.id,tea.name,tea.gender,tea.doby,tea.dobm,tea.dobd,tea.subject);
 	fclose(fp);
-	title_screen();
+	secret_tab();
 	
 }
 
@@ -900,7 +935,7 @@ void homepage(char t_u_name[])
     	
 		case 2:
 			fflush(stdin);
-    		int reply = routine_view();
+    		int reply = routine_view("AYJUYAAS");
             system("cls");
             goto success;
     		
@@ -919,52 +954,100 @@ void homepage(char t_u_name[])
 
 }
 
-int routine_view(){
+int routine_view(char dep101[]){
     system("cls");
     int a, r_ch;
-    int n;
-    char ro_list[30], ro_choose[30];
+    int n, count;
+    char ro_list[30], ro_choose[30], ro_dep[20];
 
     FILE *rop = fopen("routinelist.txt", "r");
+    
+    if(strcmp(dep101, "AYJUYAAS") != 0){
+        count = 1;
+        printf("Choose the Routine You want to View: (Enter 0 to return)\n\n");
+        while(fscanf(rop, "%[^|]|%[^\n]\n", &ro_dep, &ro_list) != EOF){
+            if(strcmp(ro_dep, dep101) == 0){
+                printf("\t[%d] %s\n", count, ro_list);
+                count++;
+            }
+        }
+        printf("\nChoose: ");
+        scanf("%d", &r_ch);
+        fflush(stdin);
+        if(r_ch == 0){
+            return 0;
+        }
+        rewind(rop);
+        count = 1;
+        while(fscanf(rop, "%[^|]|%[^\n]\n", &ro_dep, &ro_list) != EOF){
+            if(strcmp(ro_dep, dep101) == 0){
+                if(count == r_ch){
+                    strcat(ro_list, ".txt");
+                    strcpy(ro_choose, ro_list);
+                    break;
+                }
+                count++;
+            }
+        }
+        fclose(rop);
+        printf("\nYour Selected Routine:\n\n");
 
-    printf("Choose the Routine You want to View: (Enter 0 to return)\n\n");
-    while(fscanf(rop, "%d %[^\n]\n", &a, &ro_list) != EOF){
-        printf("\t[%d] %s\n", a, ro_list);
-    }
-    printf("\nChoose: ");
-    scanf("%d", &r_ch);
-    fflush(stdin);
+        FILE *routine_view = fopen(ro_choose, "r");
+        char c;
+        while ((c=fgetc(routine_view)) != EOF){
+            putchar(c);
+        }
+        fclose(routine_view);
 
-    printf("\nYour Selected Routine:\n\n");
-    if(r_ch == 0){
+        printf("\nPress any Key to go back...");
+        getche();
         return 0;
     }
-    rewind(rop);
-    while(fscanf(rop, "%d %[^\n]\n", &a, &ro_list) != EOF){
-        if(a == r_ch){
-            strcat(ro_list, ".txt");
-            strcpy(ro_choose, ro_list);
+    else{
+        count = 1;
+        printf("Choose the Routine You want to View: (Enter 0 to return)\n\n");
+        while(fscanf(rop, "%[^|]|%[^\n]\n", &ro_dep, &ro_list) != EOF){
+            printf("\t[%d] %s\n", count, ro_list);
+            count++;
         }
-    }
-    fclose(rop);
+        printf("\nChoose: ");
+        scanf("%d", &r_ch);
+        fflush(stdin);
+        if(r_ch == 0){
+            return 0;
+        }
+        rewind(rop);
+        count = 1;
+        while(fscanf(rop, "%[^|]|%[^\n]\n", &ro_dep, &ro_list) != EOF){
+            if(count == r_ch){
+                strcat(ro_list, ".txt");
+                strcpy(ro_choose, ro_list);
+                break;
+            }
+            count++;
+        }
+        fclose(rop);
+        printf("\nYour Selected Routine:\n\n");
 
-    FILE *routine_view = fopen(ro_choose, "r");
-    char c;
-    while ((c=fgetc(routine_view)) != EOF){
-        putchar(c);
-    }
-    fclose(routine_view);
+        FILE *routine_view = fopen(ro_choose, "r");
+        char c;
+        while ((c=fgetc(routine_view)) != EOF){
+            putchar(c);
+        }
+        fclose(routine_view);
 
-    printf("\nPress any Key to go back...");
-    getche();
-    return 0;
+        printf("\nPress any Key to go back...");
+        getche();
+        return 0;
+    }
+
 }
 
 int edit_dep_record(char u_name[]){
     system("cls");
 
     int editchoice = 0, re_choose = 0;
-
+    char temp_depname[30], ro_list[30], ro_dep[30];
     FILE *prf = fopen("dep_details.dat", "r");
 
     if(prf == NULL){
@@ -999,9 +1082,34 @@ int edit_dep_record(char u_name[]){
 
     switch (editchoice){
         case 1:
+        strcpy(temp_depname, depch1.dep_name);
         printf("\nEnter New Department Name: ");
         gets(depch1.dep_name);
         fflush(stdin);
+
+        FILE *ro = fopen("routinelist.txt", "r");
+        FILE *ron = fopen("new_ro.txt", "w");
+        while(fscanf(ro, "%[^|]|%[^\n]\n", &ro_dep, &ro_list) != EOF){
+            if(strcmp(ro_dep, temp_depname) == 0){
+                fprintf(ron, "%s %s", depch1.dep_name, ro_list);
+            }
+            else{
+                fprintf(ron, "%s|%s\n", ro_dep, ro_list);
+            }
+        }
+        fclose(ro); fclose(ron); remove("routinelist.txt"); rename("new_ro.txt", "routinelist.txt");
+
+        FILE *so = fopen("stu_details.dat", "r");
+        FILE *son = fopen("new_sd.dat", "w");
+        while(fscanf(so,"%[^|]|%d|%[^|]|%c|%d/%d/%d|%[^\n]\n", &st.user,&st.roll,&st.name,&st.gender,&st.doby,&st.dobm,&st.dobd,&st.faculty)!=EOF){
+            if(strcmp(st.faculty, temp_depname)==0){
+                fprintf(son,"%s|%d|%s|%c|%d/%d/%d|%s\n",st.user,st.roll,st.name,st.gender,st.doby,st.dobm,st.dobd,depch1.dep_name);
+            }
+            else{
+                fprintf(son,"%s|%d|%s|%c|%d/%d/%d|%s\n",st.user,st.roll,st.name,st.gender,st.doby,st.dobm,st.dobd,st.faculty);
+            }
+        }
+        fclose(so); fclose(son); remove("stu_details.dat"); rename("new_sd.dat", "stu_details.dat");
         break;
 
         case 2:
