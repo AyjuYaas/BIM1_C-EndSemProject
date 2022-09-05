@@ -132,7 +132,7 @@ void secret_tab(){
     system("cls");
   /** LOADING SCREEN **/
     printf("Restricted Area Loading");
-    for(i=0; i<7; i++){
+    for(i=0; i<4; i++){
         printf(".");
         delay(0.2);
     }
@@ -156,10 +156,24 @@ void secret_tab(){
         title_screen();
     }    
     else if (choose == 2){
+        FILE *dep_exist1 = fopen("dep_details", "r");
+        if(dep_exist1 == NULL){
+            printf("\n\nCannot Find Any Department!! Create a Department 1st");
+            delay(1.5);
+            secret_tab();
+        }
+        fclose(dep_exist1);
         system("cls");
         signup();
     }
     else if(choose == 3){
+        FILE *dep_exist = fopen("dep_details", "r");
+        if(dep_exist == NULL){
+            printf("\n\nCannot Find Any Department!! Create a Department 1st");
+            delay(1.5);
+            secret_tab();
+        }
+        fclose(dep_exist);
         system("cls");
         printf("\n\t\tSTUDENT ACCOUNT CREATION");
         printf("\n\n[1] Add a Single Sudent\n[2] Add Bulk Students");
@@ -196,6 +210,7 @@ void secret_tab(){
 
 void student_signup(){
     //for username and password
+
     FILE *s_check;
 	s_check = fopen("student.dat", "r");
     redo_student_username:
