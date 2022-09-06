@@ -508,6 +508,7 @@ int edit_student_details(char stu_user[]){
     printf("\n\nUpdate Successful!!");
     
     retry:
+    fflush(stdin);
     int re_choose = 0;
     printf("\nMake Any More Changes?\n[1] Yes\n[2] No\n\nChoose: ");
     scanf("%d", &re_choose);
