@@ -18,7 +18,7 @@ void secret_tab();
 void teacher_screen();
 void signIn();
 void signup();
-int homepage(char t_u_name[]);
+void homepage(char t_u_name[]);
 void student_signup();
 void student_screen();
 void student_login(char s_user[]);
@@ -495,6 +495,7 @@ int edit_student_details(char stu_user[]){
             count++;
         }
         fclose(choose_sf);
+        strcpy(st.dep, depch1.dep_name);
         break;
 
         case 6:
@@ -520,7 +521,7 @@ int edit_student_details(char stu_user[]){
 
     while(fscanf(prf1, "%[^|]|%d|%[^|]|%c|%d/%d/%d|%[^|]|%[^\n]\n", &stu.user,&stu.roll,&stu.name,&stu.gender,&stu.doby,&stu.dobm,&stu.dobd,&stu.dep, &stu.faculty) != EOF){
         if(strcmp(stu.user, stu_user) == 0){
-            fprintf(nrf,"%s|%d|%s|%c|%d/%d/%d|%s|%s\n",st.user,st.roll,st.name,st.gender,st.doby,st.dobm,st.dobd,depch1.dep_name, st.faculty);
+            fprintf(nrf,"%s|%d|%s|%c|%d/%d/%d|%s|%s\n",st.user,st.roll,st.name,st.gender,st.doby,st.dobm,st.dobd,st.dep, st.faculty);
         }
         else{
             fprintf(nrf,"%s|%d|%s|%c|%d/%d/%d|%s|%s\n",stu.user,stu.roll,stu.name,stu.gender,stu.doby,stu.dobm,stu.dobd,stu.dep, stu.faculty);
@@ -924,7 +925,7 @@ void signIn()
     
 }
 
-int homepage(char t_u_name[])
+void homepage(char t_u_name[])
 {
 	int choose;
 	success:
@@ -1011,7 +1012,7 @@ int homepage(char t_u_name[])
 		        break;
 		
 		        case 6:
-		        return 0;
+		        homepage(t_u_name);
 		
 		        case 7:
 		        exit(12);
