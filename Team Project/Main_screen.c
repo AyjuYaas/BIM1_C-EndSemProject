@@ -18,7 +18,7 @@ void secret_tab();
 void teacher_screen();
 void signIn();
 void signup();
-void homepage(char t_u_name[]);
+int homepage(char t_u_name[]);
 void student_signup();
 void student_screen();
 void student_login(char s_user[]);
@@ -65,6 +65,7 @@ struct student{
     int doby, dobm, dobd;
     char user[20];
     char pass[20];
+    char dep[20];
     char faculty[20];
 }st,stu;
 
@@ -271,7 +272,7 @@ void student_signup(){
 	printf("\nDOB (yyyy/mm/dd): ");
 	scanf("%d/%d/%d",&st.doby, &st.dobm, &st.dobd);
     fflush(stdin);
-	printf("\nChoose Faculty:\n");
+	printf("\nChoose Department:\n");
     FILE *choose_sf = fopen("dep_details.dat", "r");
     int choice, count = 1;
     while((fscanf(choose_sf, "%[^|]|%[^|]|%d/%d/%d|%[^|]|%[^\n]\n", &depch1.username, &depch1.dep_name, &depch1.em, &depch1.ed, &depch1.ey, &depch1.university, &depch1.hod)) != EOF){
@@ -289,7 +290,9 @@ void student_signup(){
         count++;
     }
     fclose(choose_sf);
-	
+	printf("\nEnter Faculty: ");
+    scanf("%[^\n]", &st.faculty);
+    fflush(stdin);
     FILE *p;
 	p = fopen("student.dat", "a");
 	fprintf(p, "%s %s\n",st.user,st.pass);
@@ -297,7 +300,7 @@ void student_signup(){
 
 	FILE *fp;
 	fp=fopen("stu_details.dat","a+");
-	fprintf(fp,"%s|%d|%s|%c|%d/%d/%d|%s\n",st.user,st.roll,st.name,st.gender,st.doby,st.dobm,st.dobd,depch1.dep_name);
+	fprintf(fp,"%s|%d|%s|%c|%d/%d/%d|%s|%s\n",st.user,st.roll,st.name,st.gender,st.doby,st.dobm,st.dobd,depch1.dep_name, st.faculty);
 	fclose(fp);
 }
 
@@ -357,7 +360,7 @@ void student_login(char s_user[]){
     system("cls");
     FILE *fp;
     fp = fopen("stu_details.dat", "r");
-    while(fscanf(fp,"%[^|]|%d|%[^|]|%c|%d/%d/%d|%[^\n]\n", &st.user,&st.roll,&st.name,&st.gender,&st.doby,&st.dobm,&st.dobd,&st.faculty)!=EOF){
+    while(fscanf(fp,"%[^|]|%d|%[^|]|%c|%d/%d/%d|%[^|]|%[^\n]\n", &st.user,&st.roll,&st.name,&st.gender,&st.doby,&st.dobm,&st.dobd, &st.dep, &st.faculty)!=EOF){
         if(strcmp(st.user, s_user)==0){
             break;
         }
@@ -384,6 +387,7 @@ void student_login(char s_user[]){
         printf("\n\tStudent Name: %s\n", st.name);
         printf("\n\tDOB (yyyy/mm/dd): %d/%d/%d\n", st.doby, st.dobm, st.dobd);
         printf("\n\tGender: %c\n", st.gender);
+        printf("\n\tDepartment: %s\n", st.dep);
         printf("\n\tFaculty: %s\n", st.faculty);
         printf("\nPress Any Key to Go Back...\n");
         fflush(stdin);
@@ -393,7 +397,7 @@ void student_login(char s_user[]){
 
     case 2:
     	fflush(stdin);
-        int r_v_check = routine_view(st.faculty);
+        int r_v_check = routine_view(st.dep);
         student_login(s_user);
         break;
     
@@ -421,7 +425,7 @@ void student_login(char s_user[]){
 int edit_student_details(char stu_user[]){
     FILE *fp;
     fp = fopen("stu_details.dat", "r");
-    while(fscanf(fp,"%[^|]|%d|%[^|]|%c|%d/%d/%d|%[^\n]\n", &st.user,&st.roll,&st.name,&st.gender,&st.doby,&st.dobm,&st.dobd,&st.faculty)!=EOF){
+    while(fscanf(fp,"%[^|]|%d|%[^|]|%c|%d/%d/%d|%[^|]|%[^\n]\n", &st.user,&st.roll,&st.name,&st.gender,&st.doby,&st.dobm,&st.dobd,&st.dep, &st.faculty)!=EOF){
         if(strcmp(st.user, stu_user)==0){
             break;
         }
@@ -435,12 +439,13 @@ int edit_student_details(char stu_user[]){
     printf("\n\nStudent Name: %s", st.name);
     printf("\n\nDOB (yyyy/mm/dd): %d/%d/%d", st.doby, st.dobm, st.dobd);
     printf("\n\nGender: %c", st.gender);
+    printf("\n\nDepartment: %s", st.dep);
     printf("\n\nFaculty: %s\n\n", st.faculty);
     fflush(stdin);
     
     draw_line();
     printf("\nSelect the Field You Want to Update:\n");
-    printf("\n[1] Roll Number\n[2] Student Name\n[3] Date of Birth\n[4] Gender\n[5] Faculty\n[6] Go Back\n[7] Exit");
+    printf("\n[1] Roll Number\n[2] Student Name\n[3] Date of Birth\n[4] Gender\n[5] Department\n[6] Faculty\n[7] Go Back\n[8] Exit");
     printf("\n\nChoose: ");
     int editchoice;
     scanf("%d%*c", &editchoice);
@@ -472,7 +477,7 @@ int edit_student_details(char stu_user[]){
         break;
 
         case 5:
-        printf("\nEnter New Faculty:\n\n");
+        printf("\nChoose New Department:\n\n");
         FILE *choose_sf = fopen("dep_details.dat", "r");
         int choice, count = 1;
         while((fscanf(choose_sf, "%[^|]|%[^|]|%d/%d/%d|%[^|]|%[^\n]\n", &depch1.username, &depch1.dep_name, &depch1.em, &depch1.ed, &depch1.ey, &depch1.university, &depch1.hod)) != EOF){
@@ -493,9 +498,15 @@ int edit_student_details(char stu_user[]){
         break;
 
         case 6:
-        return 0;
+        printf("\nEnter New Faculty: ");
+        scanf("%[^\n]", &st.faculty);
+        fflush(stdin);
+        break;
 
         case 7:
+        return 0;
+
+        case 8:
         exit(12);
 
         default:
@@ -507,12 +518,12 @@ int edit_student_details(char stu_user[]){
     FILE *nrf = fopen("new.dat", "w");
     FILE *prf1 = fopen("stu_details.dat", "r");
 
-    while(fscanf(prf1, "%[^|]|%d|%[^|]|%c|%d/%d/%d|%[^\n]\n", &stu.user,&stu.roll,&stu.name,&stu.gender,&stu.doby,&stu.dobm,&stu.dobd,&stu.faculty) != EOF){
+    while(fscanf(prf1, "%[^|]|%d|%[^|]|%c|%d/%d/%d|%[^|]|%[^\n]\n", &stu.user,&stu.roll,&stu.name,&stu.gender,&stu.doby,&stu.dobm,&stu.dobd,&stu.dep, &stu.faculty) != EOF){
         if(strcmp(stu.user, stu_user) == 0){
-            fprintf(nrf,"%s|%d|%s|%c|%d/%d/%d|%s\n",st.user,st.roll,st.name,st.gender,st.doby,st.dobm,st.dobd,depch1.dep_name);
+            fprintf(nrf,"%s|%d|%s|%c|%d/%d/%d|%s|%s\n",st.user,st.roll,st.name,st.gender,st.doby,st.dobm,st.dobd,depch1.dep_name, st.faculty);
         }
         else{
-            fprintf(nrf,"%s|%d|%s|%c|%d/%d/%d|%s\n",stu.user,stu.roll,stu.name,stu.gender,stu.doby,stu.dobm,stu.dobd,stu.faculty);
+            fprintf(nrf,"%s|%d|%s|%c|%d/%d/%d|%s|%s\n",stu.user,stu.roll,stu.name,stu.gender,stu.doby,stu.dobm,stu.dobd,stu.dep, stu.faculty);
         }
     }
     fclose(nrf);
@@ -913,7 +924,7 @@ void signIn()
     
 }
 
-void homepage(char t_u_name[])
+int homepage(char t_u_name[])
 {
 	int choose;
 	success:
@@ -921,7 +932,7 @@ void homepage(char t_u_name[])
 	printf("\t\tWelcome %s !!\n",t_u_name);
 
 	printf("\nChoose From The Following:\n\n");
-	printf("\t[1]View Personal Details\n\t[2]View Routine\n\t[3]Logout");
+	printf("\t[1]View / Edit Personal Details\n\t[2]View Routine\n\t[3]Logout");
     printf("\n\nYour Choice: ");
 	scanf("%d",&choose);
     fflush(stdin);
@@ -950,11 +961,106 @@ void homepage(char t_u_name[])
     	fclose(dfp);
         int choose1;
         success1:
-        printf("\n\nPress:\n[1] Back\n");
+        printf("\n\nPress:\n[1] Edit\n[2] Back\n");
         scanf("%d",&choose1);
         fflush(stdin);
-
-        if(choose1==1)
+		if(choose1==1)
+		{
+			re_choice1:
+			system("cls");
+			
+    		printf("\nSelect the Field You Want to Update:\n");
+		    printf("\n[1] ID\n[2] Name\n[3] Gender\n[4] DOB\n[5] Subject\n[6] Go Back\n[7] Exit");
+		    printf("\n\nChoose: ");
+		    int editchoice1;
+		    scanf("%d%*c", &editchoice1);
+		    fflush(stdin);
+		
+		    switch (editchoice1)
+			{
+		        case 1:
+		        printf("\nEnter New ID: ");
+		        scanf("%d%*c",&tea.id);
+		        fflush(stdin);
+		        break;
+		        
+		        case 2:
+		        printf("\nEnter New Name: ");
+		        scanf("%[^\n]%*c",&tea.name);
+		        fflush(stdin);
+		        break;
+		        
+		        case 3:
+		        printf("\nEnter New Gender: ");
+		        scanf("%c%*c", &tea.gender);
+		        fflush(stdin);
+		        break;
+		        
+		        case 4:
+		        printf("\nEnter New DOB (yyyy/mm/dd): ");
+		        scanf("%d/%d/%d", &tea.doby, &tea.dobm, &tea.dobd);
+		        fflush(stdin);
+		        break;
+		
+		        
+		
+		        case 5:
+		        printf("\nEnter New Subject: ");
+		        scanf("%[^\n]",tea.subject);
+		        fflush(stdin);
+		        break;
+		
+		        case 6:
+		        return 0;
+		
+		        case 7:
+		        exit(12);
+		
+		        default:
+		        fflush(stdin);
+		        system("cls");
+		        goto re_choice1;
+		    }
+		
+		    FILE *pp = fopen("new30.dat", "w");
+		    FILE *ff = fopen("tdetails.dat", "r");
+			while(fscanf(ff,"%[^|]|%d|%[^|]|%c|%d/%d/%d|%[^\n]\n",&teach.u,&teach.id,&teach.name,&teach.gender,&teach.doby,&teach.dobm,&teach.dobd,&teach.subject) != EOF)
+			{
+        		if(strcmp(tea.u,t_u_name) == 0)
+				{
+		    		fprintf(pp,"%s|%d|%s|%c|%d/%d/%d|%s\n",tea.u,tea.id,tea.name,tea.gender,tea.doby,tea.dobm,tea.dobd,tea.subject);
+		            
+		        }
+		        else{
+		            fprintf(pp,"%s|%d|%s|%c|%d/%d/%d|%s\n",teach.u,teach.id,teach.name,teach.gender,teach.doby,teach.dobm,teach.dobd,teach.subject);
+		        }
+		    }
+		    fclose(ff);
+		    fclose(pp);
+		
+		    remove("tdetails.dat");
+		    rename("new30.dat", "tdetails.dat");
+		    printf("\n\nUpdate Successful!!");
+		    
+		    retry1:
+		    fflush(stdin);
+		    int choice;
+		    printf("\nMake Any More Changes?\n[1] Yes\n[2] No\n\nChoose: ");
+		    scanf("%d", &choice);
+		    fflush(stdin);
+		
+		    switch(choice)
+			{
+		        case 1:
+		            goto re_choice1;
+		        case 2:
+		            goto success;
+		        default:
+		            goto retry1;
+		    }
+		}
+				
+        else if(choose1==2)
         {
             system("cls");
             fclose(dfp);
