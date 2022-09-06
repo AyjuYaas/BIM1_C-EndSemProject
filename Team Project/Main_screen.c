@@ -156,7 +156,7 @@ void secret_tab(){
         title_screen();
     }    
     else if (choose == 2){
-        FILE *dep_exist1 = fopen("dep_details", "r");
+        FILE *dep_exist1 = fopen("dep_details.dat", "r");
         if(dep_exist1 == NULL){
             printf("\n\nCannot Find Any Department!! Create a Department 1st");
             delay(1.5);
@@ -167,7 +167,7 @@ void secret_tab(){
         signup();
     }
     else if(choose == 3){
-        FILE *dep_exist = fopen("dep_details", "r");
+        FILE *dep_exist = fopen("dep_details.dat", "r");
         if(dep_exist == NULL){
             printf("\n\nCannot Find Any Department!! Create a Department 1st");
             delay(1.5);
