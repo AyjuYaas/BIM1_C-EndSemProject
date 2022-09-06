@@ -419,7 +419,7 @@ void student_login(char s_user[]){
 }
 
 int edit_student_details(char stu_user[]){
-     FILE *fp;
+    FILE *fp;
     fp = fopen("stu_details.dat", "r");
     while(fscanf(fp,"%[^|]|%d|%[^|]|%c|%d/%d/%d|%[^\n]\n", &st.user,&st.roll,&st.name,&st.gender,&st.doby,&st.dobm,&st.dobd,&st.faculty)!=EOF){
         if(strcmp(st.user, stu_user)==0){
@@ -472,9 +472,24 @@ int edit_student_details(char stu_user[]){
         break;
 
         case 5:
-        printf("\nEnter New Faculty: ");
-        gets(st.faculty);
+        printf("\nEnter New Faculty:\n\n");
+        FILE *choose_sf = fopen("dep_details.dat", "r");
+        int choice, count = 1;
+        while((fscanf(choose_sf, "%[^|]|%[^|]|%d/%d/%d|%[^|]|%[^\n]\n", &depch1.username, &depch1.dep_name, &depch1.em, &depch1.ed, &depch1.ey, &depch1.university, &depch1.hod)) != EOF){
+            printf("[%d] %s\n", count, depch1.dep_name);
+            count++;
+        }
+	    scanf("%d", &choice);
         fflush(stdin);
+        count = 1;
+        rewind(choose_sf);
+        while((fscanf(choose_sf, "%[^|]|%[^|]|%d/%d/%d|%[^|]|%[^\n]\n", &depch1.username, &depch1.dep_name, &depch1.em, &depch1.ed, &depch1.ey, &depch1.university, &depch1.hod)) != EOF){
+            if(choice == count){
+                break;
+            }
+            count++;
+        }
+        fclose(choose_sf);
         break;
 
         case 6:
@@ -494,7 +509,7 @@ int edit_student_details(char stu_user[]){
 
     while(fscanf(prf1, "%[^|]|%d|%[^|]|%c|%d/%d/%d|%[^\n]\n", &stu.user,&stu.roll,&stu.name,&stu.gender,&stu.doby,&stu.dobm,&stu.dobd,&stu.faculty) != EOF){
         if(strcmp(stu.user, stu_user) == 0){
-            fprintf(nrf,"%s|%d|%s|%c|%d/%d/%d|%s\n",st.user,st.roll,st.name,st.gender,st.doby,st.dobm,st.dobd,st.faculty);
+            fprintf(nrf,"%s|%d|%s|%c|%d/%d/%d|%s\n",st.user,st.roll,st.name,st.gender,st.doby,st.dobm,st.dobd,depch1.dep_name);
         }
         else{
             fprintf(nrf,"%s|%d|%s|%c|%d/%d/%d|%s\n",stu.user,stu.roll,stu.name,stu.gender,stu.doby,stu.dobm,stu.dobd,stu.faculty);
