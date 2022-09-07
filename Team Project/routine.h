@@ -179,6 +179,7 @@ char routine_maker(char dep_name[]){
     
 /******** Collison Detactor *******/
     collision_detactor:
+    fflush(stdin);
     int times_count = 1;
     int solve, soln;
     char ch;
