@@ -78,8 +78,8 @@ int main(){
 }
 
 void title_screen(){
-    
     system("cls");
+    
     int choice;
     printf ("\n\n\tWELCOME TO *** LOGIN PAGE\n\n");
     printf ("Please Choose from the following options\n\n");
@@ -716,8 +716,8 @@ void department_Lscreen(){
     {
     case 1:
     	fflush(stdin);
-        char * R_Check = routine_maker(depch1.dep_name);
-        if(R_Check == NULL){
+        char R_Check = routine_maker(depch1.dep_name);
+        if(R_Check == '\0'){
             printf("Some Error Occured While Creating Routine: ");
             delay(1.5);
             system("cls");

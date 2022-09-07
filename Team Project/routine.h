@@ -3,12 +3,27 @@
 #include<string.h>
 #include<ctype.h>
 #include<time.h>
+#include<windows.h>
 
 void delayfr(float sec);
 void trim(char * str);
 
-char * routine_maker(char dep_name[]){
+void border(){ 
+    int rows, columns;
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    int i;
 
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+    columns = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    printf("\n\n");
+    for(i=0; i<columns; i++){
+        printf("#");
+    }
+    printf("\n\n");
+}
+
+char routine_maker(char dep_name[]){
+    int processing, flag;
     system("cls");
 /****************** INITIALIZATION 1 ************************/
     printf(" ROUTINE MAKING PROGRAM \n\n");
@@ -163,118 +178,132 @@ char * routine_maker(char dep_name[]){
     }
     
 /******** Collison Detactor *******/
-
-    for(t=0; t<no_of_routines; t++){
-        for(i=0; i<total_period; i++){
-            strcpy(error_subject[t][i], subject[t][i]);
-        }
-    }
-
-    int flag = 0;
-    int k, w;
-    int choice_1;
-
-    for (t=0; t<(no_of_routines-1); t++){
-        for(i=0; i<total_days; i++){
-            n = i;
-            per = (n*period);
-            pert = ((n+1)*period);
-            d = 0;
-
-            for (j=per; j<pert; j++){
-                d += 1;
-                w = (t+1);
-                for (k=w; k<no_of_routines; k++){
-                    if (strcmp(error_subject[t][j], error_subject[k][j]) == 0){
-                        strcat (error_subject[t][j], " <");
-                        strcat (error_subject[k][j], " <");
-                        flag++;
-                    }
-                }
+    collision_detactor:
+    int times_count = 1;
+    int solve, soln;
+    char ch;
+    int error11;
+    
+    do{
+        again_again:
+        for(t=0; t<no_of_routines; t++){
+            for(i=0; i<total_period; i++){
+                strcpy(error_subject[t][i], subject[t][i]);
             }
         }
-    }
 
-/****** Showing Errors ******/
-    if(flag != 0){
+        flag = 0;
+        int k, w;
+        int choice_1;
 
-        for(t=0; t<no_of_routines; t++){
-            printf("\n\n");
-
-            lp1 = (start_day-1);
-            printf("Routine no. %d\n", (t+1));
-            printf("Faculty = %s\n", faculty[t]);
-
+        for (t=0; t<(no_of_routines-1); t++){
             for(i=0; i<total_days; i++){
                 n = i;
-
-                if (i==0){
-                    printf("----------");
-                    for(l=1; l<=(period); l++){
-                        printf("------------------");
-                    }
-                    printf("\n|%5.3s\t", "D/P");
-                    for(l=0; l<period; l++){
-                        printf("|      %-10d ", l+1);
-                    }
-                    printf("|\n");
-                    printf("----------");
-                    for(l=1; l<=(period); l++){
-                        printf("------------------");
-                    }
-                }
-                
-                printf("\n|%5.3s\t", days[lp1]);
-                lp1 += 1;
-
                 per = (n*period);
                 pert = ((n+1)*period);
                 d = 0;
-                
+
                 for (j=per; j<pert; j++){
-                    printf ("| %-16.15s", error_subject[t][j]);
+                    d += 1;
+                    w = (t+1);
+                    for (k=w; k<no_of_routines; k++){
+                        if (strcmp(error_subject[t][j], error_subject[k][j]) == 0){
+                            strcat (error_subject[t][j], " <");
+                            strcat (error_subject[k][j], " <");
+                            flag++;
+                        }
+                    }
                 }
+            }
+        }
 
-                printf ("|\n");
+     /****** Showing Errors ******/
+    border();
+        error11 = 0;
+        if(flag != 0){
 
-                printf("----------");
-                for(l=1; l<=(period); l++){
-                    printf("------------------");
+            for(t=0; t<no_of_routines; t++){
+                printf("\n\n");
+
+                lp1 = (start_day-1);
+                printf("Routine no. %d\n", (t+1));
+                printf("Faculty = %s\n", faculty[t]);
+
+                for(i=0; i<total_days; i++){
+                    n = i;
+
+                    if (i==0){
+                        printf("----------");
+                        for(l=1; l<=(period); l++){
+                            printf("------------------");
+                        }
+                        printf("\n|%5.3s\t", "D/P");
+                        for(l=0; l<period; l++){
+                            printf("|      %-10d ", l+1);
+                        }
+                        printf("|\n");
+                        printf("----------");
+                        for(l=1; l<=(period); l++){
+                            printf("------------------");
+                        }
+                    }
+                    
+                    printf("\n|%5.3s\t", days[lp1]);
+                    lp1 += 1;
+
+                    per = (n*period);
+                    pert = ((n+1)*period);
+                    d = 0;
+                    
+                    for (j=per; j<pert; j++){
+                        printf ("| %-16.15s", error_subject[t][j]);
+                    }
+
+                    printf ("|\n");
+
+                    printf("----------");
+                    for(l=1; l<=(period); l++){
+                        printf("------------------");
+                    }
+
                 }
 
             }
 
+            solve_retry:
+            fflush(stdin);
+            if(times_count == 1){
+                printf ("\nCollisions Detected In Subjects Marked '<'\nWant to Solve?\n[1] Yes\n[2] No\nChoose: ");
+                scanf("%d", &choice_1);
+                fflush(stdin);
+
+                if(choice_1 == 1)
+                    goto solve;
+                
+                else if (choice_1 == 2){
+                    processing = 322;
+                    goto final_print;
+                }
+
+                else{
+                    printf("\nError, Wrong Response: ");
+                    delayfr(1);
+                    goto solve_retry;
+                }
+            }
+
         }
-
-        solve_retry:
-        fflush(stdin);
-        printf ("\n%d collisions Detected In Subjects Marked '<'\nWant to Solve?\n[1] Yes\n[2] No\nChoose: ", flag);
-        scanf("%d", &choice_1);
-        fflush(stdin);
-
-        if(choice_1 == 1)
-            goto solve;
-        
-        else if (choice_1 == 2)
-            goto final_print;
-
         else{
-            printf("\nError, Wrong Response: ");
-            delayfr(1);
-            goto solve_retry;
+            processing = 322;
         }
 
-    }
-
-/***** Collison Solver *****/
-    solve:
-    fflush(stdin);
-    int error;
-    int solve, soln;
-    char collision_count = 1;
-    char ch = ' ';
-    do{ 
-        error = 0;
+        /***** Collison Solver *****/
+        solve:
+        fflush(stdin);
+        
+        ch = ' ';
+     
+        
         for (t=0; t<(no_of_routines-1); t++){
             for(i=0; i<total_days; i++){
                 n = i;
@@ -288,13 +317,11 @@ char * routine_maker(char dep_name[]){
                     w = (t+1);
                     for (k=w; k<no_of_routines; k++){
                         if (strcmp(subject[t][j], subject[k][j]) == 0){
-                            printf("\nCollision No. %d", collision_count);
                             printf ("\nCollision on %.3s period %d on %s & %s ", days[lp1], d, faculty[t], faculty[k]);
                             printf ("(%s = %s)", subject[t][j], subject[k][j]);
 
-                            error = 1;
+                            error11 = 1;
                             flag = 1;
-                            collision_count++;
                             solve_part:
                             fflush(stdin);
                             solve = '\0';
@@ -313,6 +340,8 @@ char * routine_maker(char dep_name[]){
                                     scanf("%s", subject[t][j]);
                                     fflush(stdin);
                                     strupr(subject[t][j]);
+                                    times_count++;
+                                    goto again_again;
                                 }
 
                                 else if (soln == 2){
@@ -320,19 +349,21 @@ char * routine_maker(char dep_name[]){
                                     scanf("%s", subject[k][j]);
                                     fflush(stdin);
                                     strupr(subject[k][j]);
+                                    times_count++;
+                                    goto again_again;
                                 }
 
                                 else{
                                     printf ("\nInvalid Entry!!");
                                     delayfr(1);
-                                    goto soln_part;
                                 }
                             }
 
                             else if (solve == 2){
                                 strcat(subject[k][j], " ");
                                 lp1 += 1;
-                                continue;
+                                times_count++;
+                                goto again_again;
                             }
 
                             else{
@@ -347,10 +378,13 @@ char * routine_maker(char dep_name[]){
                 lp1 += 1;
             }
         }
-    }while (error == 1);
-
+        times_count++;
+    }while(error11 == 1);
+    processing = 322;
+    
 /****** THE FINAL OUTPUT ******/
     final_print:
+    border();
     printf("\nThe Final Routine/s: ");
     for(t=0; t<no_of_routines; t++){
         printf("\n\n");
@@ -399,9 +433,131 @@ char * routine_maker(char dep_name[]){
         }
 
     }
+    /****** ASK FOR FINAL *****/
+    ask_for_final:
+    border();
+    fflush(stdin);
+    int final_r_choose;
+    printf("\nIs This Your Final Routine??\n");
+    printf("[1] Yes\n[2] Edit Some Changes\n[3] Start Creating Again\n[4] Exit Routine Making\n\nCHOOSE: ");
+    scanf("%d", &final_r_choose);
+    fflush(stdin);
+
+    switch (final_r_choose)
+    {
+    case 1:
+        if(processing == 322){
+            goto redo_rn;
+        }
+        goto collision_detactor;
+        break;
     
-/**** FIlE PRINTING ****/
+    case 2:
+        processing = 0;
+        goto edit_change;
+        break;
+
+    case 3:
+        routine_maker(dep_name);
+        break;
+
+    case 4:
+        return '0';
+
+    default:
+        goto ask_for_final;
+    }
+    
+ /******* Edit Change ***********/
+    
+    edit_change:
+    border();
+    fflush(stdin);
+    int edit_choice;
+    printf("\n\nMake Changes to:\n");
+    for(i=0; i<no_of_routines; i++){
+        printf("[%d] %s\n", i+1, faculty[i]);
+    }
+    printf("Choose: "); scanf("%d", &edit_choice); fflush(stdin);
+    if(edit_choice < 0 || edit_choice > no_of_routines){
+        goto edit_change;
+    }
+    int qr = edit_choice - 1;
+    int marker, period_select, day_select, original_cp;
+        printf("\n\n");
+        lp1 = (start_day-1);
+        printf("Faculty = %s\n", faculty[qr]);
+
+        for(i=0; i<total_days; i++){
+            n = i;
+            if (i==0){
+                printf("----------");
+                for(l=1; l<=(period); l++){
+                    printf("------------------");
+                }
+                printf("\n|%5.3s\t", "D/P");
+                for(l=0; l<period; l++){
+                    printf("|      %-10d ", l+1);
+                }
+                printf("|\n");
+                printf("----------");
+                for(l=1; l<=(period); l++){
+                    printf("------------------");
+                }
+            }
+
+            printf("\n|%5.3s\t", days[lp1]);
+            lp1 += 1;
+
+            per = (n*period);
+            pert = ((n+1)*period);
+            d = 0;
+            
+            for (j=per; j<pert; j++){
+                printf ("| %-16.15s", subject[qr][j]);
+            }
+
+            printf ("|\n");
+
+            printf("----------");
+            for(l=1; l<=(period); l++){
+                printf("------------------");
+            }
+
+        }
+
+        re_day:
+        printf("\n\nSelect the day You want to make changes to (i.e. SUN, MON..):\n");
+        for(i=0; i<total_days; i++){
+            printf("[%d] %.3s\n", i+1, days[i]);
+        }
+        scanf("%d", &day_select);
+        if(day_select<0 || day_select>total_days){
+            printf("Wrong Day!!");
+            goto re_day;
+        }
+        marker = (day_select-1);
+        re_per:
+        printf("Enter Period: "); scanf("%d", &period_select); fflush(stdin);
+        if(period_select<0 || period_select>period){
+            printf("\nWrong Period!!");
+            goto re_per;
+        }
+        period_select -= 1;
+        if(marker == 0){
+            original_cp = period_select;
+        }
+        else{
+            original_cp = (marker*period) + period_select;
+        }
+        printf("Enter the New Subject on %.3s %d period:\nCurrent Sub: %s\n", days[marker], period_select, subject[qr][original_cp]);
+        printf("Enter Here: "); gets(subject[qr][original_cp]); fflush(stdin); strupr(subject[qr][original_cp]);
+        goto final_print;
+
+
+ /**** FIlE PRINTING ****/
     redo_rn:
+    border();
     fflush(stdin);
     static char routine_name[25], temp_dep[20], temp_routine_name[30];
     
@@ -476,7 +632,7 @@ char * routine_maker(char dep_name[]){
     printf("\nPress Any Key To Exit: ");
     getche();
 
-    return routine_name;
+    return 'O';
 }
 
 void delayfr(float sec) 
