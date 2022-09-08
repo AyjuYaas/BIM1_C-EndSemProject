@@ -99,7 +99,9 @@ char routine_maker(char dep_name[]){
     
     char subject[no_of_routines][total_period][14];
     char error_subject[no_of_routines][total_period][15];
-
+     char temp_subject[15], temp_subject1[15];
+    
+    int t1, t2;
     system("cls");
 
 /********** ROUTINE MAKING ************/
@@ -180,10 +182,10 @@ char routine_maker(char dep_name[]){
 /******** Collison Detactor *******/
     collision_detactor:
     fflush(stdin);
-    int times_count = 1;
+    int times_count = 1, t3;
     int solve, soln;
     char ch;
-    int error11;
+    int error11, length, view_count = 1, first_view = 1;
     
     do{
         again_again:
@@ -208,10 +210,26 @@ char routine_maker(char dep_name[]){
                     d += 1;
                     w = (t+1);
                     for (k=w; k<no_of_routines; k++){
-                        if (strcmp(error_subject[t][j], error_subject[k][j]) == 0){
-                            strcat (error_subject[t][j], " <");
-                            strcat (error_subject[k][j], " <");
-                            flag++;
+                        if (view_count == 1){   
+                            if (strcmp(subject[t][j], subject[k][j]) == 0){
+                                strcpy(temp_subject, subject[t][j]); strcat(temp_subject, " <");
+                                if(strcmp(error_subject[t][j], temp_subject) != 0){
+                                    strcat (error_subject[t][j], " <");
+                                }
+                                strcpy(temp_subject1, subject[k][j]); strcat(temp_subject1, " <");
+                                if(strcmp(error_subject[k][j], temp_subject) != 0){
+                                    strcat (error_subject[k][j], " <");
+                                }
+                                flag++;
+                            }
+                        }
+                        else{
+                            if (strcmp(subject[t][j], subject[k][j]) == 0){
+                                strcat (error_subject[t][j], " <");
+                                strcat (error_subject[k][j], " <");
+                                flag++;
+                                goto show_errors;
+                            }
                         }
                     }
                 }
@@ -219,7 +237,8 @@ char routine_maker(char dep_name[]){
         }
 
      /****** Showing Errors ******/
-    border();
+        show_errors:
+        border();
         error11 = 0;
         if(flag != 0){
 
@@ -278,11 +297,21 @@ char routine_maker(char dep_name[]){
                 scanf("%d", &choice_1);
                 fflush(stdin);
 
-                if(choice_1 == 1)
+                if(choice_1 == 1){
                     goto solve;
+                }
                 
                 else if (choice_1 == 2){
                     processing = 322;
+                    for(t1=0; t1<((no_of_routines)-1); t1++){
+                        for(t2=0; t2<total_period; t2++){
+                            for(t3=(t1+1); t3<no_of_routines; t3++){
+                                if(strcmp(subject[t1][t2], subject[t3][t2]) == 0){
+                                    strcat(subject[t3][t2], " ");
+                                }
+                            }
+                        }   
+                    }
                     goto final_print;
                 }
 
@@ -296,15 +325,20 @@ char routine_maker(char dep_name[]){
         }
         else{
             processing = 322;
+            goto final_print;     
         }
 
         /***** Collison Solver *****/
         solve:
         fflush(stdin);
+        times_count++;
+        view_count++;
         
         ch = ' ';
-     
-        
+        if(first_view == 1){
+            first_view++;
+            goto again_again;
+        }
         for (t=0; t<(no_of_routines-1); t++){
             for(i=0; i<total_days; i++){
                 n = i;
@@ -318,8 +352,8 @@ char routine_maker(char dep_name[]){
                     w = (t+1);
                     for (k=w; k<no_of_routines; k++){
                         if (strcmp(subject[t][j], subject[k][j]) == 0){
-                            printf ("\nCollision on %.3s period %d on %s & %s ", days[lp1], d, faculty[t], faculty[k]);
-                            printf ("(%s = %s)", subject[t][j], subject[k][j]);
+                            printf ("\n\nCollision on period %d on %s & %s (marked <)", d, faculty[t], faculty[k]);
+                            printf ("(%s)", subject[t][j]);
 
                             error11 = 1;
                             flag = 1;
@@ -475,7 +509,7 @@ char routine_maker(char dep_name[]){
     border();
     fflush(stdin);
     int edit_choice;
-    printf("\n\nMake Changes to:\n");
+    printf("\nMake Changes to:\n");
     for(i=0; i<no_of_routines; i++){
         printf("[%d] %s\n", i+1, faculty[i]);
     }
@@ -528,7 +562,7 @@ char routine_maker(char dep_name[]){
         }
 
         re_day:
-        printf("\n\nSelect the day You want to make changes to (i.e. SUN, MON..):\n");
+        printf("\n\nSelect the day You want to make changes to :\n");
         for(i=0; i<total_days; i++){
             printf("[%d] %.3s\n", i+1, days[i]);
         }
@@ -539,7 +573,7 @@ char routine_maker(char dep_name[]){
         }
         marker = (day_select-1);
         re_per:
-        printf("Enter Period: "); scanf("%d", &period_select); fflush(stdin);
+        printf("\nEnter Period: "); scanf("%d", &period_select); fflush(stdin);
         if(period_select<0 || period_select>period){
             printf("\nWrong Period!!");
             goto re_per;
@@ -551,9 +585,9 @@ char routine_maker(char dep_name[]){
         else{
             original_cp = (marker*period) + period_select;
         }
-        printf("Enter the New Subject on %.3s %d period:\nCurrent Sub: %s\n", days[marker], period_select, subject[qr][original_cp]);
-        printf("Enter Here: "); gets(subject[qr][original_cp]); fflush(stdin); strupr(subject[qr][original_cp]);
-        goto final_print;
+        printf("\nEnter the New Subject on %.3s %d period:\nCurrent Sub: %s\n", days[marker], period_select, subject[qr][original_cp]);
+        printf("\nEnter Here: "); gets(subject[qr][original_cp]); fflush(stdin); trim(subject[qr][original_cp]); strupr(subject[qr][original_cp]);
+        goto collision_detactor;
 
 
  /**** FIlE PRINTING ****/
