@@ -141,7 +141,7 @@ void secret_tab(){
 
   /** CHOOSING SCREEN **/
     dep_create_choose:
-    printf("Welcome To Team M. Creation Page\n\n");
+    printf("\n\nWelcome To Team M. Creation Page\n\n");
     printf("\t[1] Add a New Department\n");
     printf("\t[2] Create a Teacher Account\n");
     printf("\t[3] Create a Student Account\n");
@@ -290,7 +290,7 @@ void student_signup(){
         count++;
     }
     fclose(choose_sf);
-	printf("\nEnter Faculty: ");
+	printf("\nEnter Faculty/Grade: ");
     scanf("%[^\n]", &st.faculty);
     fflush(stdin);
     FILE *p;
@@ -308,7 +308,7 @@ void student_screen(){
     char s_username[30], s_password[30];
     int flag = 0, choice;
     system("cls");
-    printf("\tWelcome to Student Login Page");
+    printf("\n\n\tWelcome to Student Login Page");
     printf("\n\nEnter Username: ");
     scanf("%s%*c", s_username);
     fflush(stdin);
@@ -365,7 +365,7 @@ void student_login(char s_user[]){
             break;
         }
     }
-    printf("\tWelcome %s", st.name);
+    printf("\n\n\tWelcome %s", st.name);
     fclose(fp);
     int choose = 0;
     printf("\nChoose from The Following Options:\n");
@@ -421,6 +421,7 @@ void student_login(char s_user[]){
     }
     
 }
+
 
 int edit_student_details(char stu_user[]){
     FILE *fp;
@@ -559,7 +560,7 @@ void dep_reg_screen(){
     signup_check = fopen("DUP.dat", "r");
     int i;
     user:
-    printf("\tDepartment Creation!!!\n\n");
+    printf("\n\n\tDepartment Creation!!!\n\n");
     printf("NOTE: Username Shouldn't contain any space, 5 - 10 Character\n");
     printf("\nWARNING!! Username CANNOT BE CHANGED once created\n\n");
     printf("Create a Username for Department: ");
@@ -642,7 +643,7 @@ void department_Lscreen(){
     char per_username[30], per_password[30];
     int flag = 0, choice;
     system("cls");
-    printf("\tWelcome to Department Login Page");
+    printf("\n\n\tWelcome to Department Login Page");
     printf("\n\nEnter Username: ");
     scanf("%s%*c", per_username);
     fflush(stdin);
@@ -716,16 +717,8 @@ void department_Lscreen(){
     {
     case 1:
     	fflush(stdin);
-        char R_Check = routine_maker(depch1.dep_name);
-        if(R_Check == '\0'){
-            printf("Some Error Occured While Creating Routine: ");
-            delay(1.5);
-            system("cls");
-            goto successful_login;
-        }
-        else{
-            goto successful_login;
-        }
+        routine_maker(depch1.dep_name);
+        goto successful_login;
         break;
 
     case 2:
@@ -874,7 +867,7 @@ void signIn()
 	int flag=0, choice_teacher;
 	redo4:
     system("cls");
-	printf("\n\tWelcome to Teacher Login\n");
+	printf("\n\n\tWelcome to Teacher Login\n");
 	printf("\nEnter Username: ");
 	scanf("%s%*c",&teach.u);
     fflush(stdin);
@@ -930,7 +923,7 @@ void homepage(char t_u_name[])
 	int choose;
 	success:
     system("cls");
-	printf("\t\tWelcome %s !!\n",t_u_name);
+	printf("\n\n\t\tWelcome %s !!\n",t_u_name);
 
 	printf("\nChoose From The Following:\n\n");
 	printf("\t[1]View / Edit Personal Details\n\t[2]View Routine\n\t[3]Logout");
@@ -1102,7 +1095,7 @@ int routine_view(char dep101[]){
     
     if(strcmp(dep101, "AYJUYAAS") != 0){
         count = 1;
-        printf("Choose the Routine You want to View: (Enter 0 to return)\n\n");
+        printf("\n\nChoose the Routine You want to View: (Enter 0 to return)\n\n");
         while(fscanf(rop, "%[^|]|%[^\n]\n", &ro_dep, &ro_list) != EOF){
             if(strcmp(ro_dep, dep101) == 0){
                 printf("\t[%d] %s\n", count, ro_list);
@@ -1200,7 +1193,7 @@ int edit_dep_record(char u_name[]){
     fclose(prf);
 
     re_choice:
-    printf("\t\t%s Department\n", depch1.dep_name);
+    printf("\n\n\t\t%s Department\n", depch1.dep_name);
     draw_line(); printf("\n");
     printf("\n\t     Your Current Details\n");
     draw_line(); printf("\n");

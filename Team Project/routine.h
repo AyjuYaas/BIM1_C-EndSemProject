@@ -22,7 +22,7 @@ void border(){
     printf("\n\n");
 }
 
-char routine_maker(char dep_name[]){
+void routine_maker(char dep_name[]){
     int processing, flag;
     system("cls");
 /****************** INITIALIZATION 1 ************************/
@@ -35,7 +35,7 @@ char routine_maker(char dep_name[]){
     //Count Variables
     int d, n, lp1;
     //Manipulation Variables
-    int per, pert;
+    int per, pert, same_sub, ro_name_choose;
 
 /************* DAY SELECT ******************/
 
@@ -64,25 +64,17 @@ char routine_maker(char dep_name[]){
     scanf("%d%*c", &end_day);
     fflush(stdin);
 
-    if(end_day<1 || end_day>7){
+    if(end_day<start_day || end_day>7){
         getchar();
         printf("\nError! Out of Range Value!");
         delayfr(0.6);
         goto re;
     }
 
-    total_days = (end_day - start_day);
-
-    if(total_days<0){
-        printf("Error! Wrong Format\n");
-        delayfr(1);
-        system("cls");
-        goto day_select;
-    }
     total_days = (end_day-start_day)+1;
 
 /********** INITIALIZATION 2 ***************/
-
+    border();
     printf("\nEnter the Total Number of Periods You Want(In a Day): ");
     scanf("%d", &period);
     fflush(stdin);
@@ -92,25 +84,36 @@ char routine_maker(char dep_name[]){
     fflush(stdin);
 
     char faculty[no_of_routines][15];
+    char temp_faculty[no_of_routines][15];
+
+    border();
+    printf("\nFaculties/Grades:");
+    for(i=0; i<no_of_routines; i++){
+        printf("\nEnter the Grade/Faculty for routine no. %d: ", i+1);
+        gets(faculty[i]);
+        trim(faculty[i]);
+        strupr(faculty[i]);
+        fflush(stdin);
+    }
 
     char period_marker[11] = ">>>       ";
 
     int total_period = (total_days*period);
     
     char subject[no_of_routines][total_period][14];
-    char error_subject[no_of_routines][total_period][15];
-     char temp_subject[15], temp_subject1[15];
+    char error_subject[no_of_routines][total_period][14];
+    char temp_subject[14], temp_subject1[14], temp_subject2[14];
     
     int t1, t2;
     system("cls");
 
+    for(i=0; i<no_of_routines; i++){
+        strcpy(temp_faculty[i], faculty[i]);
+    }
+
 /********** ROUTINE MAKING ************/
     for(t=0; t<no_of_routines; t++){
- 
-        printf("\nRoutine no. %d\nGrade/Faculty for this Routine: ", (t+1));
-        scanf("%[^\n]", faculty[t]);
-        fflush(stdin);
-        strupr(faculty[t]);
+        border();
 
         for(i=0; i<total_period; i++){
             subject[t][i][14] = '\0';
@@ -121,7 +124,7 @@ char routine_maker(char dep_name[]){
         for(op=0; op<total_period; op++){
             lp1 = (start_day-1);
             printf("Routine no. %d\n", (t+1));
-            printf("Grade/Faculty = %s\n", faculty[t]);
+            printf("Grade/Faculty = %s\n", temp_faculty[t]);
             strcpy(subject[t][op], period_marker);
 
             for(i=0; i<total_days; i++){
@@ -180,6 +183,7 @@ char routine_maker(char dep_name[]){
     }
     
 /******** Collison Detactor *******/
+
     collision_detactor:
     fflush(stdin);
     int times_count = 1, t3;
@@ -372,7 +376,7 @@ char routine_maker(char dep_name[]){
 
                                 if(soln == 1){
                                     printf ("%s Faculty %.3s period %d: ", faculty[t], days[lp1], d);
-                                    scanf("%s", subject[t][j]);
+                                    fgets(subject[t][j], 14, stdin);
                                     fflush(stdin);
                                     strupr(subject[t][j]);
                                     times_count++;
@@ -381,7 +385,7 @@ char routine_maker(char dep_name[]){
 
                                 else if (soln == 2){
                                     printf ("%s Faculty %.3s period %d: ", faculty[k], days[lp1], d);
-                                    scanf("%s", subject[k][j]);
+                                    fgets(subject[k][j], 14, stdin);
                                     fflush(stdin);
                                     strupr(subject[k][j]);
                                     times_count++;
@@ -497,7 +501,7 @@ char routine_maker(char dep_name[]){
         break;
 
     case 4:
-        return '0';
+        return;
 
     default:
         goto ask_for_final;
@@ -567,6 +571,7 @@ char routine_maker(char dep_name[]){
             printf("[%d] %.3s\n", i+1, days[i]);
         }
         scanf("%d", &day_select);
+        fflush(stdin);
         if(day_select<0 || day_select>total_days){
             printf("Wrong Day!!");
             goto re_day;
@@ -585,8 +590,25 @@ char routine_maker(char dep_name[]){
         else{
             original_cp = (marker*period) + period_select;
         }
-        printf("\nEnter the New Subject on %.3s %d period:\nCurrent Sub: %s\n", days[marker], period_select, subject[qr][original_cp]);
-        printf("\nEnter Here: "); gets(subject[qr][original_cp]); fflush(stdin); trim(subject[qr][original_cp]); strupr(subject[qr][original_cp]);
+        new_sub:
+        printf("\nEnter the New Subject on %.3s %d period:\n\nCurrent Sub: %s\n", days[marker], (period_select+1) , subject[qr][original_cp]);
+        strcpy(temp_subject1, subject[qr][original_cp]); trim(temp_subject1);
+        printf("Enter Here: "); fgets(subject[qr][original_cp], 14, stdin); fflush(stdin); trim(subject[qr][original_cp]); strupr(subject[qr][original_cp]);
+        if(strcmp(temp_subject1, subject[qr][original_cp]) == 0){
+            fflush(stdin);
+            printf("\nSame Subject As Previous!!");
+            agin_choose_new_sub:
+            printf("\n\n[1] Continue\n[2] Enter a new Subject\nChoose: ");
+            scanf("%d", &same_sub); fflush(stdin);
+            if(same_sub == 1){
+            }
+            else if(same_sub == 2){
+                goto new_sub;
+            }
+            else{
+                goto agin_choose_new_sub;
+            }
+        }
         goto collision_detactor;
 
 
@@ -603,6 +625,28 @@ char routine_maker(char dep_name[]){
         printf("\nName too long!!");
         goto redo_rn;
     }
+    FILE *op123 = fopen("routinelist.txt", "r");
+    while(fscanf(op123, "%[^|]|%[^\n]", &temp_dep, &temp_routine_name) != EOF){
+        if(strcmp(temp_routine_name, routine_name) == 0){
+            printf("\nRoutine Already Exist!!\n");
+            ro_name_collide_choice:
+            printf("[1] Overwrite\n[2] New Name\nChoose: ");
+            scanf("%d", &ro_name_choose); fflush(stdin);
+            if(ro_name_choose == 1){
+                strcat(temp_routine_name, ".txt");
+                remove(temp_routine_name);
+                break;
+            }
+            else if(ro_name_choose == 2){
+                fclose(op123);
+                goto redo_rn;
+            }
+            else{
+                goto ro_name_collide_choice;
+            }
+        }
+    }
+    fclose(op123);
     FILE *op12 = fopen("routinelist.txt", "a+");
     fprintf(op12, "%s|%s\n", dep_name, routine_name);
     fclose(op12);
@@ -667,7 +711,7 @@ char routine_maker(char dep_name[]){
     printf("\nPress Any Key To Exit: ");
     getche();
 
-    return 'O';
+    return;
 }
 
 void delayfr(float sec) 
