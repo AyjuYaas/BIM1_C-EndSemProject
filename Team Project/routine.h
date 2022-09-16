@@ -296,33 +296,35 @@ void routine_maker(char dep_name[]){
 
             solve_retry:
             fflush(stdin);
-            if(times_count == 1){
-                printf ("\nCollisions Detected In Subjects Marked '<'\nWant to Solve?\n[1] Yes\n[2] No\nChoose: ");
-                scanf("%d", &choice_1);
-                fflush(stdin);
+            if (flag != 1){
+                if(times_count == 1){
+                    printf ("\nCollisions Detected In Subjects Marked '<'\nWant to Solve?\n[1] Yes\n[2] No\nChoose: ");
+                    scanf("%d", &choice_1);
+                    fflush(stdin);
 
-                if(choice_1 == 1){
-                    goto solve;
-                }
-                
-                else if (choice_1 == 2){
-                    processing = 322;
-                    for(t1=0; t1<((no_of_routines)-1); t1++){
-                        for(t2=0; t2<total_period; t2++){
-                            for(t3=(t1+1); t3<no_of_routines; t3++){
-                                if(strcmp(subject[t1][t2], subject[t3][t2]) == 0){
-                                    strcat(subject[t3][t2], " ");
-                                }
-                            }
-                        }   
+                    if(choice_1 == 1){
+                        goto solve;
                     }
-                    goto final_print;
-                }
+                    
+                    else if (choice_1 == 2){
+                        processing = 322;
+                        for(t1=0; t1<((no_of_routines)-1); t1++){
+                            for(t2=0; t2<total_period; t2++){
+                                for(t3=(t1+1); t3<no_of_routines; t3++){
+                                    if(strcmp(subject[t1][t2], subject[t3][t2]) == 0){
+                                        strcat(subject[t3][t2], " ");
+                                    }
+                                }
+                            }   
+                        }
+                        goto final_print;
+                    }
 
-                else{
-                    printf("\nError, Wrong Response: ");
-                    delayfr(1);
-                    goto solve_retry;
+                    else{
+                        printf("\nError, Wrong Response: ");
+                        delayfr(1);
+                        goto solve_retry;
+                    }
                 }
             }
 
@@ -378,6 +380,7 @@ void routine_maker(char dep_name[]){
                                     printf ("%s Faculty %.3s period %d: ", faculty[t], days[lp1], d);
                                     fgets(subject[t][j], 14, stdin);
                                     fflush(stdin);
+                                    trim(subject[t][j]);
                                     strupr(subject[t][j]);
                                     times_count++;
                                     goto again_again;
@@ -387,6 +390,7 @@ void routine_maker(char dep_name[]){
                                     printf ("%s Faculty %.3s period %d: ", faculty[k], days[lp1], d);
                                     fgets(subject[k][j], 14, stdin);
                                     fflush(stdin);
+                                    trim(subject[k][j]);
                                     strupr(subject[k][j]);
                                     times_count++;
                                     goto again_again;
@@ -607,6 +611,16 @@ void routine_maker(char dep_name[]){
             }
             else{
                 goto agin_choose_new_sub;
+            }
+        }
+        for(i=0; i<no_of_routines; i++){
+            if(i == qr){
+                continue;
+            }
+            strcpy(temp_subject2, subject[i][original_cp]);
+            trim(temp_subject2);
+            if(strcmp(temp_subject2, subject[qr][original_cp]) == 0){
+                trim(subject[i][original_cp]);
             }
         }
         goto collision_detactor;
