@@ -157,7 +157,7 @@ void secret_tab(){
         title_screen();
     }    
     else if (choose == 2){
-        FILE *dep_exist1 = fopen("dep_details.dat", "r");
+        FILE *dep_exist1 = fopen("DUP.dat", "rb");
         if(dep_exist1 == NULL){
             printf("\n\nCannot Find Any Department!! Create a Department 1st");
             delay(1.5);
@@ -168,7 +168,7 @@ void secret_tab(){
         signup();
     }
     else if(choose == 3){
-        FILE *dep_exist = fopen("dep_details.dat", "r");
+        FILE *dep_exist = fopen("DUP.dat", "rb");
         if(dep_exist == NULL){
             printf("\n\nCannot Find Any Department!! Create a Department 1st");
             delay(1.5);
@@ -273,9 +273,10 @@ void student_signup(){
 	scanf("%d/%d/%d",&st.doby, &st.dobm, &st.dobd);
     fflush(stdin);
 	printf("\nChoose Department:\n");
-    FILE *choose_sf = fopen("dep_details.dat", "r");
+    FILE *choose_sf = fopen("DUP.dat", "rb");
     int choice, count = 1;
-    while((fscanf(choose_sf, "%[^|]|%[^|]|%d/%d/%d|%[^|]|%[^\n]\n", &depch1.username, &depch1.dep_name, &depch1.em, &depch1.ed, &depch1.ey, &depch1.university, &depch1.hod)) != EOF){
+    //while((fscanf(choose_sf, "%[^|]|%[^|]|%d/%d/%d|%[^|]|%[^\n]\n", &depch1.username, &depch1.dep_name, &depch1.em, &depch1.ed, &depch1.ey, &depch1.university, &depch1.hod)) != EOF){
+    while(fread(&depch1, sizeof(struct dep_details),1, choose_sf)){
         printf("[%d] %s\n", count, depch1.dep_name);
         count++;
     }
@@ -283,14 +284,15 @@ void student_signup(){
     fflush(stdin);
     count = 1;
     rewind(choose_sf);
-    while((fscanf(choose_sf, "%[^|]|%[^|]|%d/%d/%d|%[^|]|%[^\n]\n", &depch1.username, &depch1.dep_name, &depch1.em, &depch1.ed, &depch1.ey, &depch1.university, &depch1.hod)) != EOF){
+    //while((fscanf(choose_sf, "%[^|]|%[^|]|%d/%d/%d|%[^|]|%[^\n]\n", &depch1.username, &depch1.dep_name, &depch1.em, &depch1.ed, &depch1.ey, &depch1.university, &depch1.hod)) != EOF){
+    while(fread(&depch1, sizeof(struct dep_details),1, choose_sf)){
         if(choice == count){
             break;
         }
         count++;
     }
     fclose(choose_sf);
-	printf("\nEnter Faculty/Grade: ");
+	printf("\nEnter Batch Year: ");
     scanf("%[^\n]", &st.faculty);
     fflush(stdin);
     FILE *p;
@@ -388,7 +390,7 @@ void student_login(char s_user[]){
         printf("\n\tDOB (yyyy/mm/dd): %d/%d/%d\n", st.doby, st.dobm, st.dobd);
         printf("\n\tGender: %c\n", st.gender);
         printf("\n\tDepartment: %s\n", st.dep);
-        printf("\n\tFaculty: %s\n", st.faculty);
+        printf("\n\tBatch Year: %s\n", st.faculty);
         printf("\nPress Any Key to Go Back...\n");
         fflush(stdin);
         getche();
@@ -422,7 +424,6 @@ void student_login(char s_user[]){
     
 }
 
-
 int edit_student_details(char stu_user[]){
     FILE *fp;
     fp = fopen("stu_details.dat", "r");
@@ -441,12 +442,12 @@ int edit_student_details(char stu_user[]){
     printf("\n\nDOB (yyyy/mm/dd): %d/%d/%d", st.doby, st.dobm, st.dobd);
     printf("\n\nGender: %c", st.gender);
     printf("\n\nDepartment: %s", st.dep);
-    printf("\n\nFaculty: %s\n\n", st.faculty);
+    printf("\n\nBatch Year: %s\n\n", st.faculty);
     fflush(stdin);
     
     draw_line();
     printf("\nSelect the Field You Want to Update:\n");
-    printf("\n[1] Roll Number\n[2] Student Name\n[3] Date of Birth\n[4] Gender\n[5] Department\n[6] Faculty\n[7] Go Back\n[8] Exit");
+    printf("\n[1] Roll Number\n[2] Student Name\n[3] Date of Birth\n[4] Gender\n[5] Department\n[6] Batch Year\n[7] Go Back\n[8] Exit");
     printf("\n\nChoose: ");
     int editchoice;
     scanf("%d%*c", &editchoice);
@@ -479,9 +480,10 @@ int edit_student_details(char stu_user[]){
 
         case 5:
         printf("\nChoose New Department:\n\n");
-        FILE *choose_sf = fopen("dep_details.dat", "r");
+        FILE *choose_sf = fopen("DUP.dat", "rb");
         int choice, count = 1;
-        while((fscanf(choose_sf, "%[^|]|%[^|]|%d/%d/%d|%[^|]|%[^\n]\n", &depch1.username, &depch1.dep_name, &depch1.em, &depch1.ed, &depch1.ey, &depch1.university, &depch1.hod)) != EOF){
+        //while((fscanf(choose_sf, "%[^|]|%[^|]|%d/%d/%d|%[^|]|%[^\n]\n", &depch1.username, &depch1.dep_name, &depch1.em, &depch1.ed, &depch1.ey, &depch1.university, &depch1.hod)) != EOF){
+        while(fread(&depch1, sizeof(struct dep_details),1, choose_sf)){
             printf("[%d] %s\n", count, depch1.dep_name);
             count++;
         }
@@ -489,7 +491,8 @@ int edit_student_details(char stu_user[]){
         fflush(stdin);
         count = 1;
         rewind(choose_sf);
-        while((fscanf(choose_sf, "%[^|]|%[^|]|%d/%d/%d|%[^|]|%[^\n]\n", &depch1.username, &depch1.dep_name, &depch1.em, &depch1.ed, &depch1.ey, &depch1.university, &depch1.hod)) != EOF){
+        //while((fscanf(choose_sf, "%[^|]|%[^|]|%d/%d/%d|%[^|]|%[^\n]\n", &depch1.username, &depch1.dep_name, &depch1.em, &depch1.ed, &depch1.ey, &depch1.university, &depch1.hod)) != EOF){
+        while(fread(&depch1, sizeof(struct dep_details),1, choose_sf)){
             if(choice == count){
                 break;
             }
@@ -500,7 +503,7 @@ int edit_student_details(char stu_user[]){
         break;
 
         case 6:
-        printf("\nEnter New Faculty: ");
+        printf("\nEnter New Batch Year: ");
         scanf("%[^\n]", &st.faculty);
         fflush(stdin);
         break;
@@ -557,7 +560,7 @@ void dep_reg_screen(){
   /** Department Username Password **/
     system("cls");
     FILE *signup_check;
-    signup_check = fopen("DUP.dat", "r");
+    signup_check = fopen("DUP.dat", "rb");
     int i;
     user:
     printf("\n\n\tDepartment Creation!!!\n\n");
@@ -575,7 +578,8 @@ void dep_reg_screen(){
     depch.username[10] = '\0';
     depch.password[15] = '\0';
 
-    while (fscanf(signup_check, "%s %s\n", depch.username, depch.password) != EOF){
+    //while (fscanf(signup_check, "%s %s\n", depch.username, depch.password) != EOF){
+    while(fread(&depch, sizeof(struct dep_details), 1, signup_check)){
         if (strcmp(dep.username, depch.username) == 0){
             printf("\nUsername Already Taken!!!");
             printf("\nTry Again with Another USERNAME");
@@ -617,14 +621,15 @@ void dep_reg_screen(){
     gets(dep.hod);
     fflush(stdin);
     
-    FILE *un_pw_entry;
-    un_pw_entry = fopen("DUP.dat", "a");
-    fprintf(un_pw_entry, "%s %s\n", dep.username, dep.password);
-    fclose(un_pw_entry);
+    // FILE *un_pw_entry;
+    // un_pw_entry = fopen("DUP.dat", "ab");
+    // fprintf(un_pw_entry, "%s %s\n", dep.username, dep.password);
+    // fclose(un_pw_entry);
 
     FILE *dep_data_entry;
-    dep_data_entry = fopen("dep_details.dat", "a+");
-    fprintf (dep_data_entry, "%s|%s|%.2d/%.2d/%.4d|%s|%s\n", dep.username, dep.dep_name, dep.em, dep.ed, dep.ey, dep.university, dep.hod);
+    dep_data_entry = fopen("DUP.dat", "a+b");
+    //fprintf (dep_data_entry, "%s|%s|%.2d/%.2d/%.4d|%s|%s\n", dep.username, dep.dep_name, dep.em, dep.ed, dep.ey, dep.university, dep.hod);
+    fwrite(&dep, sizeof(struct dep_details), 1, dep_data_entry);
     fclose(dep_data_entry);
 
     printf("\nDepartment Account Created..");
@@ -652,8 +657,9 @@ void department_Lscreen(){
     fflush(stdin);
 
     FILE *login_check;
-    login_check = fopen("DUP.dat", "r");
-    while(fscanf(login_check, "%s %s\n", depch.username, depch.password) != EOF){
+    login_check = fopen("DUP.dat", "rb");
+    //while(fscanf(login_check, "%s %s\n", depch.username, depch.password) != EOF){
+    while(fread(&depch, sizeof(struct dep_details), 1, login_check)){
         if(strcmp(per_username, depch.username)==0 && strcmp(per_password, depch.password)==0){
             flag = 1;
             system("cls");
@@ -692,8 +698,9 @@ void department_Lscreen(){
 
     successful_login:
     system("cls");
-    FILE *details_check = fopen("dep_details.dat", "r");
-    while((fscanf(details_check, "%[^|]|%[^|]|%d/%d/%d|%[^|]|%[^\n]\n", &depch1.username, &depch1.dep_name, &depch1.em, &depch1.ed, &depch1.ey, &depch1.university, &depch1.hod)) != EOF){
+    FILE *details_check = fopen("DUP.dat", "rb");
+    //while((fscanf(details_check, "%[^|]|%[^|]|%d/%d/%d|%[^|]|%[^\n]\n", &depch1.username, &depch1.dep_name, &depch1.em, &depch1.ed, &depch1.ey, &depch1.university, &depch1.hod)) != EOF){
+    while(fread(&depch1, sizeof(struct dep_details), 1, details_check)){
         if(strcmp(depch1.username, per_username) == 0){
             printf("\tAccount: %s Department\n", depch1.dep_name);
             fclose(login_check);
@@ -1179,13 +1186,14 @@ int edit_dep_record(char u_name[]){
 
     int editchoice = 0, re_choose = 0;
     char temp_depname[30], ro_list[30], ro_dep[30];
-    FILE *prf = fopen("dep_details.dat", "r");
+    FILE *prf = fopen("DUP.dat", "rb");
 
     if(prf == NULL){
         printf("Error Opening File");
     }
     
-    while((fscanf(prf, "%[^|]|%[^|]|%d/%d/%d|%[^|]|%[^\n]\n", &depch1.username, &depch1.dep_name, &depch1.em, &depch1.ed, &depch1.ey, &depch1.university, &depch1.hod)) != EOF){
+    //while((fscanf(prf, "%[^|]|%[^|]|%d/%d/%d|%[^|]|%[^\n]\n", &depch1.username, &depch1.dep_name, &depch1.em, &depch1.ed, &depch1.ey, &depch1.university, &depch1.hod)) != EOF){
+    while(fread(&depch1, sizeof(struct dep_details), 1, prf)){
         if(strcmp(depch1.username, u_name) == 0){
             break;
         }
@@ -1222,7 +1230,7 @@ int edit_dep_record(char u_name[]){
         FILE *ron = fopen("new_ro.txt", "w");
         while(fscanf(ro, "%[^|]|%[^\n]\n", &ro_dep, &ro_list) != EOF){
             if(strcmp(ro_dep, temp_depname) == 0){
-                fprintf(ron, "%s %s", depch1.dep_name, ro_list);
+                fprintf(ron, "%s|%s", depch1.dep_name, ro_list);
             }
             else{
                 fprintf(ron, "%s|%s\n", ro_dep, ro_list);
@@ -1232,12 +1240,12 @@ int edit_dep_record(char u_name[]){
 
         FILE *so = fopen("stu_details.dat", "r");
         FILE *son = fopen("new_sd.dat", "w");
-        while(fscanf(so,"%[^|]|%d|%[^|]|%c|%d/%d/%d|%[^\n]\n", &st.user,&st.roll,&st.name,&st.gender,&st.doby,&st.dobm,&st.dobd,&st.faculty)!=EOF){
-            if(strcmp(st.faculty, temp_depname)==0){
-                fprintf(son,"%s|%d|%s|%c|%d/%d/%d|%s\n",st.user,st.roll,st.name,st.gender,st.doby,st.dobm,st.dobd,depch1.dep_name);
+        while(fscanf(so,"%[^|]|%d|%[^|]|%c|%d/%d/%d|%[^|]|%[^\n]\n", &st.user,&st.roll,&st.name,&st.gender,&st.doby,&st.dobm,&st.dobd, &st.dep, &st.faculty)!=EOF){
+            if(strcmp(st.dep, temp_depname)==0){
+                fprintf(son,"%s|%d|%s|%c|%d/%d/%d|%s|%s\n",st.user,st.roll,st.name,st.gender,st.doby,st.dobm,st.dobd,depch1.dep_name, st.faculty);
             }
             else{
-                fprintf(son,"%s|%d|%s|%c|%d/%d/%d|%s\n",st.user,st.roll,st.name,st.gender,st.doby,st.dobm,st.dobd,st.faculty);
+                fprintf(son,"%s|%d|%s|%c|%d/%d/%d|%s|%s\n",st.user,st.roll,st.name,st.gender,st.doby,st.dobm,st.dobd, st.dep, st.faculty);
             }
         }
         fclose(so); fclose(son); remove("stu_details.dat"); rename("new_sd.dat", "stu_details.dat");
@@ -1277,21 +1285,24 @@ int edit_dep_record(char u_name[]){
         goto re_choice;
     }
 
-    FILE *nrf = fopen("new.dat", "w");
-    FILE *prf1 = fopen("dep_details.dat", "r");
-    while((fscanf(prf1, "%[^|]|%[^|]|%d/%d/%d|%[^|]|%[^\n]\n", &depch.username, &depch.dep_name, &depch.em, &depch.ed, &depch.ey, &depch.university, &depch.hod)) != EOF){
+    FILE *nrf = fopen("new.dat", "wb");
+    FILE *prf1 = fopen("DUP.dat", "rb");
+    //while((fscanf(prf1, "%[^|]|%[^|]|%d/%d/%d|%[^|]|%[^\n]\n", &depch.username, &depch.dep_name, &depch.em, &depch.ed, &depch.ey, &depch.university, &depch.hod)) != EOF){
+    while(fread(&depch, sizeof(struct dep_details), 1, prf1)){
         if(strcmp(depch1.username, depch.username) == 0){
-            fprintf (nrf, "%s|%s|%.2d/%.2d/%.4d|%s|%s\n", depch1.username, depch1.dep_name, depch1.em, depch1.ed, depch1.ey, depch1.university, depch1.hod);
+            //fprintf (nrf, "%s|%s|%.2d/%.2d/%.4d|%s|%s\n", depch1.username, depch1.dep_name, depch1.em, depch1.ed, depch1.ey, depch1.university, depch1.hod);
+            fwrite(&depch1, sizeof(struct dep_details), 1, nrf);
         }
         else{
-            fprintf (nrf, "%s|%s|%.2d/%.2d/%.4d|%s|%s\n", depch.username, depch.dep_name, depch.em, depch.ed, depch.ey, depch.university, depch.hod);
+            //fprintf (nrf, "%s|%s|%.2d/%.2d/%.4d|%s|%s\n", depch.username, depch.dep_name, depch.em, depch.ed, depch.ey, depch.university, depch.hod);
+            fwrite(&depch, sizeof(struct dep_details), 1, nrf);
         }
     }
     fclose(nrf);
     fclose(prf1);
 
-    remove("dep_details.dat");
-    rename("new.dat", "dep_details.dat");
+    remove("DUP.dat");
+    rename("new.dat", "DUP.dat");
     printf("\n\nUpdate Successful!!");
     
     retry:
@@ -1326,8 +1337,9 @@ int change_dep_p(char username[]){
     fflush(stdin);
 
     FILE *login_check;
-    login_check = fopen("DUP.dat", "r");
-    while(fscanf(login_check, "%s %s\n", depch.username, depch.password) != EOF){
+    login_check = fopen("DUP.dat", "rb");
+    //while(fscanf(login_check, "%s %s\n", depch.username, depch.password) != EOF){
+    while(fread(&depch, sizeof(struct dep_details), 1, login_check)){
         if(strcmp(username, depch.username)==0 && strcmp(current_pass, depch.password)==0){
             flag = 1;
             break;
@@ -1340,17 +1352,20 @@ int change_dep_p(char username[]){
     }
 
     printf("\n\n\tEnter New Password: ");
-    scanf("%[^\n]", &changed_pass);
+    scanf("%[^\n]", &depch.password);
+    fflush(stdin);
 
-    FILE *read = fopen("DUP.dat", "r");
-    FILE *new = fopen("new.dat", "w");
+    FILE *read = fopen("DUP.dat", "rb");
+    FILE *new = fopen("new.dat", "wb");
 
-    while(fscanf(read, "%s %s\n", depch.username, depch.password) != EOF){
-        if(strcmp(username, depch.username)==0 && strcmp(current_pass, depch.password)==0){
-            fprintf(new, "%s %s\n", username, changed_pass);
+    //while(fscanf(read, "%s %s\n", depch.username, depch.password) != EOF){
+    while(fread(&depch1, sizeof(struct dep_details), 1, read)){
+        if(strcmp(username, depch1.username)==0 && strcmp(current_pass, depch1.password)==0){
+            fwrite(&depch, sizeof(struct dep_details), 1, new);
         } 
         else{
-            fprintf(new, "%s %s\n", depch.username, depch.password);
+            //fprintf(new, "%s %s\n", depch.username, depch.password);
+            fwrite(&depch1, sizeof(struct dep_details), 1, new);
         }
     }
 
