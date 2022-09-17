@@ -930,11 +930,10 @@ void homepage(char t_u_name[])
 	int choose;
 	success:
     system("cls");
-	printf("\n\n\t\tWelcome %s !!\n",t_u_name);
-
+	printf("\t\tWelcome %s !!\n",t_u_name);
 	printf("\nChoose From The Following:\n\n");
-	printf("\t[1]View / Edit Personal Details\n\t[2]View Routine\n\t[3]Logout");
-    printf("\n\nYour Choice: ");
+	printf("\t[1]View Personal Details\n\t[2]View Routine\n\t[3]Give Assignment\n\t[4]Logout");
+    printf("\n\nYour Choice:");
 	scanf("%d",&choose);
     fflush(stdin);
 
@@ -1012,7 +1011,8 @@ void homepage(char t_u_name[])
 		        break;
 		
 		        case 6:
-		        homepage(t_u_name);
+		        goto re_choice1;
+		        break;
 		
 		        case 7:
 		        exit(12);
@@ -1079,16 +1079,63 @@ void homepage(char t_u_name[])
     		
         case 3:
         	system("cls");
-			title_screen();
-			break;	
+        	int wish, number = 1, flag = 0;
+            char assign[100], file_name[30];
+        	tt:
+        	printf("\tGive Assignment\n");
+            printf("\n\nGive Assignment to:\n");
+        	FILE *dep_view = fopen("DUP.dat", "rb");
+            while(fread(&depch1, sizeof(struct dep_details), 1, dep_view)){
+                printf("\n[%d] %s", number, depch1.dep_name);
+                number++;
+            }
+            printf("\nChoose: ");
+            scanf("%d", &wish); fflush(stdin);
+            rewind(dep_view);
+            number = 1;
+            while(fread(&depch1, sizeof(struct dep_details), 1, dep_view)){
+                if(wish == number){
+                    flag = 1;
+                    break;
+                }
+                number++;
+            }
+            fclose(dep_view);
+            if(flag == 0){
+                printf("\nWrong Choice");
+            }
 
-    	default:
-    		printf("Wrong Input!!");
-    		goto success;
-    		break;
-    		
+            printf("\n\nGive Assignment to Students of %s department", depch1.dep_name);
+            printf("\n\nPress enter to end assignment text\n\n => ");
+            scanf("%[^\n]", assign); fflush(stdin);
+
+            printf("\nAssigned to Department!!");
+            strcpy(file_name, depch1.dep_name);
+            strcat(file_name, "assign");
+            strcat(file_name, ".txt");
+            FILE *assign_print = fopen(file_name, "w");
+            fprintf(assign_print, "%s", assign);
+            fclose(assign_print);
+            printf("\nPress Any Key to Go Back");
+            getche();
+
+            homepage(t_u_name);
+            break;
+
+			  
+		case 4:
+		system("cls");
+		title_screen();
+		break;	
+		
+		default:
+		system("cls");
+		printf("Wrong Input!!");
+		goto success;
+		break;
+		    		
 	}
-	
+			
 
 }
 
