@@ -359,6 +359,7 @@ void student_screen(){
 }
 
 void student_login(char s_user[]){
+	tttt:
     system("cls");
     FILE *fp,*dep_view;
     FILE *details_check;
@@ -429,10 +430,23 @@ void student_login(char s_user[]){
 			            fclose(assign_print);	
 			            fclose(details_check);
 			            rewind(details_check);
-			        	system("pause");
-			        	void student_login(char s_user[]);
+			        	
 					}
 				}
+				int non;
+				yh:
+				printf("Press [1] Back");
+				scanf("%d",&non);
+				if(non==1)
+				{
+					system("cls");
+					goto tttt;
+				}
+				else
+				{
+					goto yh;
+				}
+			   
 		
 			break;
            
