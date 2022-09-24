@@ -3,7 +3,7 @@
 #include<time.h>
 #include<string.h>
 #include<ctype.h>
-#include"designers_info.h"
+#include"designer_info.h"
 #include"routine.h"
 #include<windows.h>
 
@@ -1044,8 +1044,8 @@ void homepage(char t_u_name[])
 		        break;
 		
 		        case 6:
-		        goto re_choice1;
-		        break;
+		        homepage(t_u_name);
+                break;
 		
 		        case 7:
 		        exit(12);

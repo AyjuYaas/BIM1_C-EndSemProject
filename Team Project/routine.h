@@ -383,6 +383,7 @@ void routine_maker(char dep_name[]){
                                     trim(subject[t][j]);
                                     strupr(subject[t][j]);
                                     times_count++;
+                                    lp1+=1;
                                     goto again_again;
                                 }
 
@@ -393,6 +394,7 @@ void routine_maker(char dep_name[]){
                                     trim(subject[k][j]);
                                     strupr(subject[k][j]);
                                     times_count++;
+                                    lp1+=1;
                                     goto again_again;
                                 }
 
@@ -406,6 +408,7 @@ void routine_maker(char dep_name[]){
                                 strcat(subject[k][j], " ");
                                 lp1 += 1;
                                 times_count++;
+                                lp1+=1;
                                 goto again_again;
                             }
 
@@ -571,16 +574,24 @@ void routine_maker(char dep_name[]){
 
         re_day:
         printf("\n\nSelect the day You want to make changes to :\n");
-        for(i=0; i<total_days; i++){
-            printf("[%d] %.3s\n", i+1, days[i]);
+        int countdays = 1;
+        lp1 = (start_day - 1);
+        for(i=lp1; i<=(end_day - 1); i++){
+            printf("[%d] %.3s\n", countdays, days[i]);
+            countdays++;
         }
         scanf("%d", &day_select);
         fflush(stdin);
-        if(day_select<0 || day_select>total_days){
+        if(day_select<lp1 || day_select>(end_day - 1)){
             printf("Wrong Day!!");
-            goto re_day;
+            goto re_day;        }
+        countdays = 1;
+        for(i=lp1; i<=(end_day - 1); i++){
+            if(countdays == day_select){
+                marker = i;
+            }
+            countdays++;
         }
-        marker = (day_select-1);
         re_per:
         printf("\nEnter Period: "); scanf("%d", &period_select); fflush(stdin);
         if(period_select<0 || period_select>period){
@@ -724,8 +735,8 @@ void routine_maker(char dep_name[]){
 
     printf("\nPress Any Key To Exit: ");
     getche();
+    fflush(stdin);
 
-    return;
 }
 
 void delayfr(float sec) 
