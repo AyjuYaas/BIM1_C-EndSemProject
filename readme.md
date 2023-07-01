@@ -1,3 +1,9 @@
+# About the Project
+Done as End Semester Project in BIM 1st Semeseter, Tribhuvan University\
+\
+A Simple College Management System with Login features for Departments, Students and Teachers and Many Other Things\
+And a Manual Routine Making System that Detects any Collision on Same Subjects 
+
 # Declaraion
 We hereby declare that the project work entitled “College Management System” submitted to St. Xavier’s College, is a record of and original work done by our group 
 members listed below under the guidance of Er. Anuj Shrestha, Lecturer in the Department of Computer Science, Mr. Ganesh Yogi Head of Department of Computer Science,
